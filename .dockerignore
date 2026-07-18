@@ -1,0 +1,13 @@
+.git
+.vite
+dist
+node_modules
+coverage
+scratch
+tmp
+*.log
+.env
+.env.*
+!.env.example
+.codex-dev-server*.log
+README_部署说明.md
