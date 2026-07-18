@@ -1,0 +1,47 @@
+{
+  "id": "comp_23",
+  "name": "WS2812B 智能幻彩 RGB 灯条",
+  "type": "Digital",
+  "category": "Actuator",
+  "pinsUsed": 1,
+  "voltage": "5V",
+  "active": true,
+  "description": "内置控制芯片的串行可寻址单总线三色 LED 灯条",
+  "macroPrefix": "LED_STRIP",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "5V",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "DIN",
+        "offsetY": 45,
+        "type": "GPIO"
+      },
+      {
+        "name": "GND",
+        "offsetY": 72,
+        "type": "GND"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "adafruit/Adafruit NeoPixel"
+    ],
+    "includes": [
+      "#include <Adafruit_NeoPixel.h>"
+    ],
+    "defines": [
+      "#define LED_COUNT 10"
+    ],
+    "globalInstantiation": "Adafruit_NeoPixel strip = Adafruit_NeoPixel(LED_COUNT, PIN_{{MACRO_PREFIX}}, NEO_GRB + NEO_KHZ800);",
+    "setupCode": "strip.begin(); strip.show(); strip.setBrightness(50);",
+    "apiDocumentation": "void setPixelColor(uint16_t n, uint32_t c); - 设置第 n 个LED的颜色（如 strip.Color(255,0,0)）\nvoid show(); - 刷新灯条颜色渲染\nvoid clear(); - 清空并关闭所有LED灯"
+  }
+}

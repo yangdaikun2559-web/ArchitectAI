@@ -1,0 +1,47 @@
+{
+  "id": "comp_10",
+  "name": "DS18B20 防水温度传感器",
+  "type": "Digital",
+  "category": "Sensor",
+  "pinsUsed": 1,
+  "voltage": "Both",
+  "active": true,
+  "description": "单总线精密数字温度传感器，广泛用于液体和管道温度测量",
+  "macroPrefix": "DS18B20",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "DATA",
+        "offsetY": 45,
+        "type": "GPIO"
+      },
+      {
+        "name": "GND",
+        "offsetY": 72,
+        "type": "GND"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "paulstoffregen/OneWire",
+      "milesburton/DallasTemperature"
+    ],
+    "includes": [
+      "#include <OneWire.h>",
+      "#include <DallasTemperature.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "OneWire oneWire_DS18B20(PIN_{{MACRO_PREFIX}}); DallasTemperature sensors_DS18B20(&oneWire_DS18B20);",
+    "setupCode": "sensors_DS18B20.begin();",
+    "apiDocumentation": "float getTempCByIndex(int index); - 获取指定索引传感器摄氏温度值\nvoid requestTemperatures(); - 发送温度转换请求指令"
+  }
+}

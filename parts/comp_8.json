@@ -1,0 +1,46 @@
+{
+  "id": "comp_8",
+  "name": "ESP8266 Wi-Fi 模块 (ESP-01S)",
+  "type": "UART",
+  "category": "Other",
+  "pinsUsed": 2,
+  "voltage": "3.3V",
+  "active": true,
+  "description": "串行 AT 指令 Wi-Fi 芯片，用于外挂联网通讯",
+  "macroPrefix": "ESP8266",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "generic_board",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "TXD",
+        "offsetY": 54,
+        "type": "UART_TX"
+      },
+      {
+        "name": "RXD",
+        "offsetY": 72,
+        "type": "UART_RX"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [],
+    "includes": [],
+    "defines": [],
+    "globalInstantiation": "",
+    "setupCode": "",
+    "apiDocumentation": "支持发送标准 AT 串行指令与 ESP8266 连接，用于 TCP/UDP MQTT 联网数据上报。"
+  }
+}

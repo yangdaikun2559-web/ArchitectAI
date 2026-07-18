@@ -1,0 +1,54 @@
+{
+  "id": "comp_12",
+  "name": "MPU6050 三轴陀螺仪加速度传感器",
+  "type": "I2C",
+  "category": "Sensor",
+  "pinsUsed": 2,
+  "voltage": "Both",
+  "active": true,
+  "description": "集成3轴陀螺仪、3轴加速度计及数字运动处理器(DMP)",
+  "macroPrefix": "MPU6050",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "SCL",
+        "offsetY": 54,
+        "type": "I2C_SCL"
+      },
+      {
+        "name": "SDA",
+        "offsetY": 72,
+        "type": "I2C_SDA"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "adafruit/Adafruit MPU6050",
+      "adafruit/Adafruit Unified Sensor",
+      "adafruit/Adafruit BusIO"
+    ],
+    "includes": [
+      "#include <Adafruit_MPU6050.h>",
+      "#include <Adafruit_Sensor.h>",
+      "#include <Wire.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "Adafruit_MPU6050 mpu;",
+    "setupCode": "if (!mpu.begin()) { Serial.println(\"MPU6050 connection failed\"); }",
+    "apiDocumentation": "bool getEvent(sensors_event_t *a, sensors_event_t *g, sensors_event_t *temp); - 获取加速度、陀螺仪和温度传感器数据事件"
+  }
+}

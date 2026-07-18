@@ -1,0 +1,71 @@
+{
+  "id": "comp_24",
+  "name": "L298N 双路直流电机驱动板",
+  "type": "PWM",
+  "category": "Actuator",
+  "pinsUsed": 6,
+  "voltage": "Both",
+  "active": true,
+  "description": "双H桥电机驱动芯片，可同时驱动两个直流减速电机或一个步进电机",
+  "macroPrefix": "MOTOR",
+  "cadLayout": {
+    "width": 160,
+    "height": 165,
+    "renderType": "generic_board",
+    "pins": [
+      {
+        "name": "VS",
+        "offsetY": 15,
+        "type": "VCC"
+      },
+      {
+        "name": "VCC",
+        "offsetY": 30,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 45,
+        "type": "GND"
+      },
+      {
+        "name": "IN1",
+        "offsetY": 60,
+        "type": "GPIO"
+      },
+      {
+        "name": "IN2",
+        "offsetY": 75,
+        "type": "GPIO"
+      },
+      {
+        "name": "IN3",
+        "offsetY": 90,
+        "type": "GPIO"
+      },
+      {
+        "name": "IN4",
+        "offsetY": 105,
+        "type": "GPIO"
+      },
+      {
+        "name": "ENA",
+        "offsetY": 120,
+        "type": "PWM"
+      },
+      {
+        "name": "ENB",
+        "offsetY": 135,
+        "type": "PWM"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [],
+    "includes": [],
+    "defines": [],
+    "globalInstantiation": "",
+    "setupCode": "pinMode(PIN_{{MACRO_PREFIX}}_IN1, OUTPUT); pinMode(PIN_{{MACRO_PREFIX}}_IN2, OUTPUT); pinMode(PIN_{{MACRO_PREFIX}}_IN3, OUTPUT); pinMode(PIN_{{MACRO_PREFIX}}_IN4, OUTPUT); pinMode(PIN_{{MACRO_PREFIX}}_ENA, OUTPUT); pinMode(PIN_{{MACRO_PREFIX}}_ENB, OUTPUT);",
+    "apiDocumentation": "// 通道A正转: digitalWrite(PIN_MOTOR_IN1,HIGH); digitalWrite(PIN_MOTOR_IN2,LOW); analogWrite(PIN_MOTOR_ENA, speed);\n// 通道A反转: digitalWrite(PIN_MOTOR_IN1,LOW); digitalWrite(PIN_MOTOR_IN2,HIGH);\n// 通道B正转: digitalWrite(PIN_MOTOR_IN3,HIGH); digitalWrite(PIN_MOTOR_IN4,LOW); analogWrite(PIN_MOTOR_ENB, speed);\n// 通道B反转: digitalWrite(PIN_MOTOR_IN3,LOW); digitalWrite(PIN_MOTOR_IN4,HIGH);\n// 停止: analogWrite(PIN_MOTOR_ENA, 0); analogWrite(PIN_MOTOR_ENB, 0);"
+  }
+}

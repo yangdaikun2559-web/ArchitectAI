@@ -1,0 +1,41 @@
+{
+  "id": "comp_6",
+  "name": "有源 5V 蜂鸣器",
+  "type": "Digital",
+  "category": "Alert",
+  "pinsUsed": 1,
+  "voltage": "5V",
+  "active": true,
+  "description": "高电平直接触发持续警报声响",
+  "macroPrefix": "BUZZER",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "buzzer_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 45,
+        "type": "GND"
+      },
+      {
+        "name": "I/O",
+        "offsetY": 72,
+        "type": "GPIO"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [],
+    "includes": [],
+    "defines": [],
+    "globalInstantiation": "",
+    "setupCode": "pinMode(PIN_{{MACRO_PREFIX}}, OUTPUT);",
+    "apiDocumentation": "digitalWrite(PIN_{{MACRO_PREFIX}}, HIGH); - 开启/触发蜂鸣器鸣叫\ndigitalWrite(PIN_{{MACRO_PREFIX}}, LOW); - 关闭蜂鸣器"
+  }
+}

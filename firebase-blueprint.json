@@ -1,0 +1,136 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user profiles with basic permissions metadata.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth unique ID for the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User visible name."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "admin", "superadmin"],
+          "description": "Access control role of the user."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of profile creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of profile update."
+        }
+      },
+      "required": ["userId", "email", "role", "createdAt"]
+    },
+    "Project": {
+      "title": "IoT Generation Project",
+      "description": "Represents an IoT platform generation project with code, diagrams and schematics.",
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string",
+          "description": "Unique project generation UUID/ID."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner userId who created the project."
+        },
+        "name": {
+          "type": "string",
+          "description": "Human readable title of the project."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "generating", "completed", "failed"],
+          "description": "State transition tracker for the workspace generation."
+        },
+        "rawInput": {
+          "type": "string",
+          "description": "The user's raw natural language prompt input."
+        },
+        "optimizedPrompt": {
+          "type": "string",
+          "description": "AI-empowered structured optimized prompt that serves as the blueprint."
+        },
+        "recommendedPlatform": {
+          "type": "string",
+          "description": "Target MCU selected, e.g. ESP32, STM32."
+        },
+        "recommendedSensors": {
+          "type": "string",
+          "description": "Target sensor, e.g. DHT22, Photoresistor."
+        },
+        "recommendedDisplays": {
+          "type": "string",
+          "description": "Target display layout, e.g. OLED 0.96 inch."
+        },
+        "recommendedAlerts": {
+          "type": "string",
+          "description": "Target acoustic/alarm module, e.g. Active Buzzer."
+        },
+        "recommendedNetwork": {
+          "type": "string",
+          "description": "Communicative protocol selected, e.g. Wi-Fi + MQTT."
+        },
+        "recommendedPower": {
+          "type": "string",
+          "description": "Power profile, e.g. USB 5V, Battery 3.7V."
+        },
+        "diagramSvg": {
+          "type": "string",
+          "description": "The custom vector schematic diagram outlining pin-pair connections."
+        },
+        "codeFiles": {
+          "type": "string",
+          "description": "Serialized JSON dictionary containing file paths and source contents."
+        },
+        "readmeText": {
+          "type": "string",
+          "description": "The formatted project-level instructions document (README.md)."
+        },
+        "logs": {
+          "type": "string",
+          "description": "Serialized array of steps completed with timing records."
+        },
+        "errorMessage": {
+          "type": "string",
+          "description": "Error details if the pipeline execution fails."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when project was initialized."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when of last state mutation."
+        }
+      },
+      "required": ["projectId", "userId", "name", "status", "rawInput", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Registered IoT platform users."
+    },
+    "projects/{projectId}": {
+      "schema": "Project",
+      "description": "User generated IoT projects."
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "id": "comp_25",
+  "name": "ULN2003 步进电机驱动模块",
+  "type": "Digital",
+  "category": "Actuator",
+  "pinsUsed": 4,
+  "voltage": "5V",
+  "active": true,
+  "description": "高耐压、大电流达林顿管阵列，配合 28BYJ-48 五线四相减速步进电机使用",
+  "macroPrefix": "STEPPER",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "generic_board",
+    "pins": [
+      {
+        "name": "IN1",
+        "offsetY": 18,
+        "type": "GPIO"
+      },
+      {
+        "name": "IN2",
+        "offsetY": 36,
+        "type": "GPIO"
+      },
+      {
+        "name": "IN3",
+        "offsetY": 54,
+        "type": "GPIO"
+      },
+      {
+        "name": "IN4",
+        "offsetY": 72,
+        "type": "GPIO"
+      },
+      {
+        "name": "GND",
+        "offsetY": 90,
+        "type": "GND"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [],
+    "includes": [
+      "#include <Stepper.h>"
+    ],
+    "defines": [
+      "#define STEPS_PER_REV 2048"
+    ],
+    "globalInstantiation": "Stepper myStepper(STEPS_PER_REV, PIN_{{MACRO_PREFIX}}_IN1, PIN_{{MACRO_PREFIX}}_IN3, PIN_{{MACRO_PREFIX}}_IN2, PIN_{{MACRO_PREFIX}}_IN4);",
+    "setupCode": "myStepper.setSpeed(10);",
+    "apiDocumentation": "void step(int steps); - 控制电机转动步数，正数为顺时针，负数为逆时针"
+  }
+}

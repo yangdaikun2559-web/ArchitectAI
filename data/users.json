@@ -1,0 +1,22 @@
+[
+  {
+    "userId": "user_teacher_demo",
+    "username": "teacher_demo",
+    "email": "",
+    "displayName": "参赛演示教师",
+    "passwordHash": "8327b3d20176a43a3690dbaca432b4e35ea050384c76e62cf9237f654536b26d",
+    "role": "admin",
+    "createdAt": "2026-07-18T00:00:00.000Z",
+    "updatedAt": "2026-07-18T00:00:00.000Z"
+  },
+  {
+    "userId": "user_student_demo",
+    "username": "student_demo",
+    "email": "",
+    "displayName": "参赛演示学生",
+    "passwordHash": "6af09aa64ad64ec311ff8def7cb1ed1468904c45bb8cb7294d630089aaade20a",
+    "role": "user",
+    "createdAt": "2026-07-18T00:00:00.000Z",
+    "updatedAt": "2026-07-18T00:00:00.000Z"
+  }
+]

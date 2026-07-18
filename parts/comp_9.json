@@ -1,0 +1,51 @@
+{
+  "id": "comp_9",
+  "name": "MAX30102 心率血氧传感器",
+  "type": "I2C",
+  "category": "Sensor",
+  "pinsUsed": 2,
+  "voltage": "3.3V",
+  "active": true,
+  "description": "集成了发光二极管与光电检测器的脉搏血氧及心率监测传感器",
+  "macroPrefix": "MAX30102",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "SCL",
+        "offsetY": 54,
+        "type": "I2C_SCL"
+      },
+      {
+        "name": "SDA",
+        "offsetY": 72,
+        "type": "I2C_SDA"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "sparkfun/SparkFun MAX3010x Pulse Oximeter and Heart Rate Sensor"
+    ],
+    "includes": [
+      "#include <Wire.h>",
+      "#include \"MAX30105.h\""
+    ],
+    "defines": [],
+    "globalInstantiation": "MAX30105 particleSensor;",
+    "setupCode": "if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) { Serial.println(\"MAX30102 not found\"); }",
+    "apiDocumentation": "float getTemperature(); - 读取内置温度传感器值\nvoid setup(); - 初始化传感器设置\nuint32_t getRed(); - 获取红光强度通道数据\nuint32_t getIR(); - 获取红外光强度通道数据"
+  }
+}

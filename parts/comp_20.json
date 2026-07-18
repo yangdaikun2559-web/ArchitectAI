@@ -1,0 +1,50 @@
+{
+  "id": "comp_20",
+  "name": "TM1637 四位数码管显示模块",
+  "type": "Digital",
+  "category": "Display",
+  "pinsUsed": 2,
+  "voltage": "Both",
+  "active": true,
+  "description": "带时钟点（冒号）的四位共阳极数码管显示器模块，适用于电子时钟和简易计数看板",
+  "macroPrefix": "SEG",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "oled_style",
+    "pins": [
+      {
+        "name": "GND",
+        "offsetY": 18,
+        "type": "GND"
+      },
+      {
+        "name": "VCC",
+        "offsetY": 36,
+        "type": "VCC"
+      },
+      {
+        "name": "DIO",
+        "offsetY": 54,
+        "type": "GPIO"
+      },
+      {
+        "name": "CLK",
+        "offsetY": 72,
+        "type": "GPIO"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "smouban/TM1637"
+    ],
+    "includes": [
+      "#include <TM1637Display.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "TM1637Display displaySeg(PIN_{{MACRO_PREFIX}}_CLK, PIN_{{MACRO_PREFIX}}_DIO);",
+    "setupCode": "displaySeg.setBrightness(0x0f);",
+    "apiDocumentation": "void showNumberDec(int num, bool leading_zero = false, uint8_t length = 4, uint8_t pos = 0); - 在数码管显示10进制数字\nvoid setSegments(const uint8_t segments[], uint8_t length = 4, uint8_t pos = 0); - 设定原始段码进行自定义字符显示"
+  }
+}

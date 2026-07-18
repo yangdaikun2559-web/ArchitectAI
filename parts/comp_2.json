@@ -1,0 +1,41 @@
+{
+  "id": "comp_2",
+  "name": "MQ-2 易燃气体传感器",
+  "type": "Analog",
+  "category": "Sensor",
+  "pinsUsed": 1,
+  "voltage": "5V",
+  "active": true,
+  "description": "烟雾、液化气与天然气敏感电阻探头",
+  "macroPrefix": "MQ2",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 45,
+        "type": "GND"
+      },
+      {
+        "name": "A0",
+        "offsetY": 72,
+        "type": "ADC"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [],
+    "includes": [],
+    "defines": [],
+    "globalInstantiation": "",
+    "setupCode": "",
+    "apiDocumentation": "int analogRead(PIN_{{MACRO_PREFIX}}); - 读取气体模拟浓度值"
+  }
+}

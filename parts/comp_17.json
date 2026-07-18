@@ -1,0 +1,66 @@
+{
+  "id": "comp_17",
+  "name": "MFRC522 RFID 射频刷卡模块",
+  "type": "SPI",
+  "category": "Sensor",
+  "pinsUsed": 5,
+  "voltage": "3.3V",
+  "active": true,
+  "description": "13.56MHz 高集成度非接触式射频读写卡芯片",
+  "macroPrefix": "RC522",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "generic_board",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 30,
+        "type": "GND"
+      },
+      {
+        "name": "RST",
+        "offsetY": 42,
+        "type": "GPIO"
+      },
+      {
+        "name": "MISO",
+        "offsetY": 54,
+        "type": "SPI_MISO"
+      },
+      {
+        "name": "MOSI",
+        "offsetY": 66,
+        "type": "SPI_MOSI"
+      },
+      {
+        "name": "SCK",
+        "offsetY": 78,
+        "type": "SPI_SCK"
+      },
+      {
+        "name": "SS",
+        "offsetY": 90,
+        "type": "GPIO"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "miguelbalboa/rfid"
+    ],
+    "includes": [
+      "#include <SPI.h>",
+      "#include <MFRC522.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "MFRC522 mfrc522(PIN_{{MACRO_PREFIX}}_SS, PIN_{{MACRO_PREFIX}}_RST);",
+    "setupCode": "SPI.begin(); mfrc522.PCD_Init();",
+    "apiDocumentation": "bool PICC_IsNewCardPresent(); - 检查是否有新卡片\nbool PICC_ReadCardSerial(); - 读取卡片序列号，返回 true 表示成功\nvoid PICC_DumpToSerial(MFRC522::Uid *uid); - 串口格式化打印卡片 UUID"
+  }
+}

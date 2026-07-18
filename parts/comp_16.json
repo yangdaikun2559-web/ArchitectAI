@@ -1,0 +1,41 @@
+{
+  "id": "comp_16",
+  "name": "YL-69 土壤湿度传感器",
+  "type": "Analog",
+  "category": "Sensor",
+  "pinsUsed": 1,
+  "voltage": "Both",
+  "active": true,
+  "description": "插入土壤测量水份的电阻式感应器，支持模拟和数字双路输出",
+  "macroPrefix": "SOIL",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 45,
+        "type": "GND"
+      },
+      {
+        "name": "A0",
+        "offsetY": 72,
+        "type": "ADC"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [],
+    "includes": [],
+    "defines": [],
+    "globalInstantiation": "",
+    "setupCode": "pinMode(PIN_{{MACRO_PREFIX}}, INPUT);",
+    "apiDocumentation": "int analogRead(PIN_{{MACRO_PREFIX}}); - 读取湿度模拟值，越湿数值越小（通常 0-4095）"
+  }
+}

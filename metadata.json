@@ -1,0 +1,6 @@
+{
+  "name": "IoT Project Gen Platform",
+  "description": "An interactive, expert IoT generator platform to compile functional firmwares, orthogonally mapped circuit wiring schematics, and clean CAD diagrams instantly.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "comp_4",
+  "name": "1602 LCD (配合 I2C 转接板)",
+  "type": "I2C",
+  "category": "Display",
+  "pinsUsed": 2,
+  "voltage": "5V",
+  "active": true,
+  "description": "低成本带背光字符液晶显示器",
+  "macroPrefix": "LCD",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "oled_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "SCL",
+        "offsetY": 54,
+        "type": "I2C_SCL"
+      },
+      {
+        "name": "SDA",
+        "offsetY": 72,
+        "type": "I2C_SDA"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "marcoschwartz/LiquidCrystal_I2C"
+    ],
+    "includes": [
+      "#include <LiquidCrystal_I2C.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "LiquidCrystal_I2C lcd(0x27, 16, 2);",
+    "setupCode": "lcd.init();\nlcd.backlight();",
+    "apiDocumentation": "void clear(); - 清屏\nvoid setCursor(uint8_t col, uint8_t row); - 设置光标\nvoid print(String s); - 显示文本\nvoid println(String s); - 显示文本并换行"
+  }
+}

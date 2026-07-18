@@ -1,0 +1,41 @@
+{
+  "id": "comp_15",
+  "name": "HC-SR501 人体红外感应传感器",
+  "type": "Digital",
+  "category": "Sensor",
+  "pinsUsed": 1,
+  "voltage": "5V",
+  "active": true,
+  "description": "基于红外线技术的自动控制模块，检测人体移动输出高电平信号",
+  "macroPrefix": "PIR",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "OUT",
+        "offsetY": 45,
+        "type": "GPIO"
+      },
+      {
+        "name": "GND",
+        "offsetY": 72,
+        "type": "GND"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [],
+    "includes": [],
+    "defines": [],
+    "globalInstantiation": "",
+    "setupCode": "pinMode(PIN_{{MACRO_PREFIX}}, INPUT);",
+    "apiDocumentation": "digitalRead(PIN_{{MACRO_PREFIX}}); - 检测是否有人，返回 HIGH 表示有人检测到，LOW 表示无人"
+  }
+}

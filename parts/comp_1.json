@@ -1,0 +1,48 @@
+{
+  "id": "comp_1",
+  "name": "DHT22 温湿度传感器",
+  "type": "Digital",
+  "category": "Sensor",
+  "pinsUsed": 1,
+  "voltage": "Both",
+  "active": true,
+  "description": "单总线精密温湿度传感器，默认 10k 上拉",
+  "macroPrefix": "DHT",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "DATA",
+        "offsetY": 45,
+        "type": "GPIO"
+      },
+      {
+        "name": "GND",
+        "offsetY": 72,
+        "type": "GND"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "adafruit/DHT sensor library",
+      "adafruit/Adafruit Unified Sensor"
+    ],
+    "includes": [
+      "#include <DHT.h>"
+    ],
+    "defines": [
+      "#define DHTTYPE DHT22"
+    ],
+    "globalInstantiation": "DHT dht(PIN_{{MACRO_PREFIX}}, DHTTYPE);",
+    "setupCode": "dht.begin();",
+    "apiDocumentation": "float readTemperature(); - 读取摄氏度温度值\nfloat readHumidity(); - 读取空气相对湿度值"
+  }
+}

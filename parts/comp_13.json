@@ -1,0 +1,55 @@
+{
+  "id": "comp_13",
+  "name": "BME280 温湿度气压传感器",
+  "type": "I2C",
+  "category": "Sensor",
+  "pinsUsed": 2,
+  "voltage": "Both",
+  "active": true,
+  "description": "高精度环境温度、相对湿度与绝对大气压强测量传感器",
+  "macroPrefix": "BME280",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "SCL",
+        "offsetY": 54,
+        "type": "I2C_SCL"
+      },
+      {
+        "name": "SDA",
+        "offsetY": 72,
+        "type": "I2C_SDA"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "adafruit/Adafruit BME280 Library",
+      "adafruit/Adafruit Unified Sensor"
+    ],
+    "includes": [
+      "#include <Wire.h>",
+      "#include <Adafruit_Sensor.h>",
+      "#include <Adafruit_BME280.h>"
+    ],
+    "defines": [
+      "#define SEALEVELPRESSURE_HPA (1013.25)"
+    ],
+    "globalInstantiation": "Adafruit_BME280 bme;",
+    "setupCode": "if (!bme.begin(0x76)) { Serial.println(\"BME280 not found, check addr 0x76/0x77\"); }",
+    "apiDocumentation": "float readTemperature(); - 获取当前气温摄氏度\nfloat readHumidity(); - 获取空气相对湿度百分比\nfloat readPressure(); - 获取大气压帕斯卡 (Pa)\nfloat readAltitude(float seaLevelhPa); - 估算当前海拔高度值"
+  }
+}

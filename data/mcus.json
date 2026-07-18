@@ -1,0 +1,62 @@
+[
+  {
+    "id": "mcu_1",
+    "name": "ESP32-WROOM-32E",
+    "family": "ESP32",
+    "sdaPin": "GPIO 21",
+    "sclPin": "GPIO 22",
+    "rxPin": "GPIO 3",
+    "txPin": "GPIO 1",
+    "voltage": "3.3V",
+    "rom": "4MB",
+    "active": true
+  },
+  {
+    "id": "mcu_2",
+    "name": "STM32F103C8T6 (BluePill)",
+    "family": "STM32",
+    "sdaPin": "PB7",
+    "sclPin": "PB6",
+    "rxPin": "PA10",
+    "txPin": "PA9",
+    "voltage": "3.3V",
+    "rom": "64KB",
+    "active": true
+  },
+  {
+    "id": "mcu_3",
+    "name": "Arduino Nano V3.0",
+    "family": "Arduino",
+    "sdaPin": "A4",
+    "sclPin": "A5",
+    "rxPin": "D0",
+    "txPin": "D1",
+    "voltage": "5V",
+    "rom": "32KB",
+    "active": true
+  },
+  {
+    "id": "mcu_4",
+    "name": "ESP8266 NodeMCU V3",
+    "family": "ESP32",
+    "sdaPin": "GPIO 4",
+    "sclPin": "GPIO 5",
+    "rxPin": "GPIO 3",
+    "txPin": "GPIO 1",
+    "voltage": "3.3V",
+    "rom": "4MB",
+    "active": true
+  },
+  {
+    "id": "mcu_5",
+    "name": "Raspberry Pi Pico W",
+    "family": "Other",
+    "sdaPin": "GP4",
+    "sclPin": "GP5",
+    "rxPin": "GP1",
+    "txPin": "GP0",
+    "voltage": "3.3V",
+    "rom": "2MB",
+    "active": true
+  }
+]

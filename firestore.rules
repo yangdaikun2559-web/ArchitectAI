@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Global Helper Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
+    }
+    
+    function isValidUser(data) {
+      return data.userId is string 
+        && data.userId.size() <= 128
+        && data.email is string
+        && data.email.size() <= 200
+        && data.role in ['user', 'admin', 'superadmin']
+        && (data.displayName == null || (data.displayName is string && data.displayName.size() <= 200))
+        && data.createdAt is string
+        && data.createdAt.size() >= 19
+        && data.createdAt.size() <= 40
+        && data.updatedAt is string
+        && data.updatedAt.size() >= 19
+        && data.updatedAt.size() <= 40;
+    }
+
+    function isValidProject(data) {
+      return data.projectId is string
+        && data.projectId.size() <= 128
+        && data.userId is string
+        && data.userId.size() <= 128
+        && data.name is string
+        && data.name.size() <= 200
+        && data.status in ['draft', 'generating', 'completed', 'failed']
+        && (data.rawInput == null || (data.rawInput is string && data.rawInput.size() <= 10000))
+        && (data.optimizedPrompt == null || (data.optimizedPrompt is string && data.optimizedPrompt.size() <= 10240))
+        && (data.recommendedPlatform == null || (data.recommendedPlatform is string && data.recommendedPlatform.size() <= 1024))
+        && (data.recommendedSensors == null || (data.recommendedSensors is string && data.recommendedSensors.size() <= 1024))
+        && (data.recommendedDisplays == null || (data.recommendedDisplays is string && data.recommendedDisplays.size() <= 1024))
+        && (data.recommendedAlerts == null || (data.recommendedAlerts is string && data.recommendedAlerts.size() <= 1024))
+        && (data.recommendedNetwork == null || (data.recommendedNetwork is string && data.recommendedNetwork.size() <= 1024))
+        && (data.recommendedPower == null || (data.recommendedPower is string && data.recommendedPower.size() <= 1024))
+        && (data.diagramSvg == null || (data.diagramSvg is string && data.diagramSvg.size() <= 1048576))
+        && (data.readmeText == null || (data.readmeText is string && data.readmeText.size() <= 1048576))
+        && (data.codeFiles == null || (data.codeFiles is string && data.codeFiles.size() <= 5242880))
+        && (data.logs == null || (data.logs is string && data.logs.size() <= 5242880))
+        && (data.errorMessage == null || (data.errorMessage is string && data.errorMessage.size() <= 524288))
+        && data.createdAt is string
+        && data.createdAt.size() >= 19
+        && data.createdAt.size() <= 40
+        && data.updatedAt is string
+        && data.updatedAt.size() >= 19
+        && data.updatedAt.size() <= 40;
+    }
+    
+    // Match Rules
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == "user";
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role && request.resource.data.createdAt == resource.data.createdAt;
+    }
+    
+    match /projects/{projectId} {
+      allow get: if isSignedIn() && isOwner(resource.data.userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isSignedIn() 
+        && isOwner(request.resource.data.userId) 
+        && isValidProject(request.resource.data);
+        
+      allow update: if isSignedIn()
+        && isOwner(resource.data.userId)
+        && isOwner(request.resource.data.userId)
+        && isValidProject(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt;
+        
+      allow delete: if isSignedIn() && isOwner(resource.data.userId);
+    }
+
+    match /mcus/{mcuId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /components/{componentId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

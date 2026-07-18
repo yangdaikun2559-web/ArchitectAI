@@ -1,0 +1,69 @@
+{
+  "id": "comp_19",
+  "name": "ST7735 彩色 TFT 显示屏",
+  "type": "SPI",
+  "category": "Display",
+  "pinsUsed": 5,
+  "voltage": "3.3V",
+  "active": true,
+  "description": "1.8寸彩色 TFT 液晶屏，分辨率 128x160，采用 SPI 接口控制",
+  "macroPrefix": "TFT",
+  "cadLayout": {
+    "width": 160,
+    "height": 120,
+    "renderType": "oled_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 30,
+        "type": "GND"
+      },
+      {
+        "name": "CS",
+        "offsetY": 45,
+        "type": "GPIO"
+      },
+      {
+        "name": "RST",
+        "offsetY": 60,
+        "type": "GPIO"
+      },
+      {
+        "name": "DC",
+        "offsetY": 75,
+        "type": "GPIO"
+      },
+      {
+        "name": "MOSI",
+        "offsetY": 90,
+        "type": "SPI_MOSI"
+      },
+      {
+        "name": "SCK",
+        "offsetY": 105,
+        "type": "SPI_SCK"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "adafruit/Adafruit ST7735 and ST7789 Library",
+      "adafruit/Adafruit GFX Library",
+      "adafruit/Adafruit BusIO"
+    ],
+    "includes": [
+      "#include <Adafruit_GFX.h>",
+      "#include <Adafruit_ST7735.h>",
+      "#include <SPI.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "Adafruit_ST7735 tft = Adafruit_ST7735(PIN_{{MACRO_PREFIX}}_CS, PIN_{{MACRO_PREFIX}}_DC, PIN_{{MACRO_PREFIX}}_RST);",
+    "setupCode": "tft.initR(INITR_BLACKTAB); tft.fillScreen(ST7735_BLACK);",
+    "apiDocumentation": "void fillScreen(uint16_t color); - 填充整个屏幕颜色\nvoid setCursor(int16_t x, int16_t y); - 设置光标坐标\nvoid setTextColor(uint16_t c); - 设置文本前景色\nvoid setTextSize(uint8_t s); - 设置字体大小\nvoid print(String s); - 显示普通文本"
+  }
+}

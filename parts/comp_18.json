@@ -1,0 +1,51 @@
+{
+  "id": "comp_18",
+  "name": "SGP30 空气质量 TVOC 传感器",
+  "type": "I2C",
+  "category": "Sensor",
+  "pinsUsed": 2,
+  "voltage": "3.3V",
+  "active": true,
+  "description": "金属氧化物气体传感器，测量等效二氧化碳和总挥发性有机物",
+  "macroPrefix": "SGP30",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "sensor_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "SCL",
+        "offsetY": 54,
+        "type": "I2C_SCL"
+      },
+      {
+        "name": "SDA",
+        "offsetY": 72,
+        "type": "I2C_SDA"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "adafruit/Adafruit SGP30 Sensor"
+    ],
+    "includes": [
+      "#include <Wire.h>",
+      "#include \"Adafruit_SGP30.h\""
+    ],
+    "defines": [],
+    "globalInstantiation": "Adafruit_SGP30 sgp;",
+    "setupCode": "if (!sgp.begin()) { Serial.println(\"SGP30 not found\"); }",
+    "apiDocumentation": "bool IAQmeasure(); - 开启环境参数采集更新命令，返回 true 表示成功\nuint16_t TVOC; - TVOC 有毒有害挥发物浓度(ppb)\nuint16_t eCO2; - 等效二氧化碳浓度(ppm)"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "id": "comp_7",
+  "name": "MAX6675 K型热电偶",
+  "type": "SPI",
+  "category": "Sensor",
+  "pinsUsed": 3,
+  "voltage": "3.3V",
+  "active": true,
+  "description": "冷端补偿串行通讯 SPI 摄氏度温度变送器",
+  "macroPrefix": "MAX6675",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "generic_board",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "SCK",
+        "offsetY": 54,
+        "type": "GPIO"
+      },
+      {
+        "name": "CS",
+        "offsetY": 72,
+        "type": "GPIO"
+      },
+      {
+        "name": "SO",
+        "offsetY": 90,
+        "type": "GPIO"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "adafruit/MAX6675 library"
+    ],
+    "includes": [
+      "#include <max6675.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "MAX6675 thermocouple(PIN_{{MACRO_PREFIX}}_SCK, PIN_{{MACRO_PREFIX}}_CS, PIN_{{MACRO_PREFIX}}_SO);",
+    "setupCode": "",
+    "apiDocumentation": "double readCelsius(); - 读取热电偶的实时摄氏度温度"
+  }
+}

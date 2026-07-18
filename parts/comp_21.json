@@ -1,0 +1,55 @@
+{
+  "id": "comp_21",
+  "name": "MAX7219 8x8 LED点阵屏模块",
+  "type": "SPI",
+  "category": "Display",
+  "pinsUsed": 3,
+  "voltage": "5V",
+  "active": true,
+  "description": "由 MAX7219 串行输入/输出共阴极显示驱动芯片驱动的 8x8 点阵屏，可级联控制",
+  "macroPrefix": "MATRIX",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "oled_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "DIN",
+        "offsetY": 54,
+        "type": "GPIO"
+      },
+      {
+        "name": "CS",
+        "offsetY": 72,
+        "type": "GPIO"
+      },
+      {
+        "name": "CLK",
+        "offsetY": 90,
+        "type": "GPIO"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "wayoda/LedControl"
+    ],
+    "includes": [
+      "#include <LedControl.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "LedControl lc=LedControl(PIN_{{MACRO_PREFIX}}_DIN, PIN_{{MACRO_PREFIX}}_CLK, PIN_{{MACRO_PREFIX}}_CS, 1);",
+    "setupCode": "lc.shutdown(0,false); lc.setBrightness(0,8); lc.clearDisplay(0);",
+    "apiDocumentation": "void setLed(int addr, int row, int col, boolean state); - 开启或关闭某一颗像素LED点\nvoid setRow(int addr, int row, byte value); - 设置一整行的亮灭状态值\nvoid clearDisplay(int addr); - 清除该级联屏上所有的LED像素亮灭状态"
+  }
+}

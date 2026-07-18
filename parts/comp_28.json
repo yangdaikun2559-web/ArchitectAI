@@ -1,0 +1,67 @@
+{
+  "id": "comp_28",
+  "name": "nRF24L01 2.4G 无线通信模块",
+  "type": "SPI",
+  "category": "Other",
+  "pinsUsed": 5,
+  "voltage": "3.3V",
+  "active": true,
+  "description": "工作在 2.4GHz 全球通用 ISM 频段的单芯片无线收发器",
+  "macroPrefix": "RF24",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "generic_board",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 30,
+        "type": "GND"
+      },
+      {
+        "name": "CSN",
+        "offsetY": 42,
+        "type": "GPIO"
+      },
+      {
+        "name": "CE",
+        "offsetY": 54,
+        "type": "GPIO"
+      },
+      {
+        "name": "MOSI",
+        "offsetY": 66,
+        "type": "SPI_MOSI"
+      },
+      {
+        "name": "MISO",
+        "offsetY": 78,
+        "type": "SPI_MISO"
+      },
+      {
+        "name": "SCK",
+        "offsetY": 90,
+        "type": "SPI_SCK"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "nrf24/RF24"
+    ],
+    "includes": [
+      "#include <SPI.h>",
+      "#include <nRF24L01.h>",
+      "#include <RF24.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "RF24 radio(PIN_{{MACRO_PREFIX}}_CE, PIN_{{MACRO_PREFIX}}_CSN);",
+    "setupCode": "radio.begin(); radio.setPALevel(RF24_PA_LOW);",
+    "apiDocumentation": "bool write(const void* buf, uint8_t len); - 无线发送指定数据包\nbool available(); - 检查是否有收到的无线数据包\nvoid read(void* buf, uint8_t len); - 读取无线接收到的数据包内容"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "comp_3",
+  "name": "OLED 128x64 SSD1306",
+  "type": "I2C",
+  "category": "Display",
+  "pinsUsed": 2,
+  "voltage": "Both",
+  "active": true,
+  "description": "经典 I2C 控制显示屏",
+  "macroPrefix": "OLED",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "oled_style",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "SCL",
+        "offsetY": 54,
+        "type": "I2C_SCL"
+      },
+      {
+        "name": "SDA",
+        "offsetY": 72,
+        "type": "I2C_SDA"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [
+      "adafruit/Adafruit SSD1306",
+      "adafruit/Adafruit GFX Library"
+    ],
+    "includes": [
+      "#include <Wire.h>",
+      "#include <Adafruit_GFX.h>",
+      "#include <Adafruit_SSD1306.h>"
+    ],
+    "defines": [
+      "#define SCREEN_WIDTH 128",
+      "#define SCREEN_HEIGHT 64",
+      "#define OLED_RESET -1"
+    ],
+    "globalInstantiation": "Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);",
+    "setupCode": "if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { Serial.println(F(\"SSD1306 allocation failed\")); }\ndisplay.clearDisplay();\ndisplay.display();",
+    "apiDocumentation": "void clearDisplay(); - 清屏\nvoid display(); - 刷新显示\nvoid setTextSize(uint8_t s); - 设置文字大小\nvoid setTextColor(uint16_t c); - 设置颜色\nvoid setCursor(int16_t x, int16_t y); - 设置光标位置\nvoid print(String s); - 输出文字\nvoid println(String s); - 输出文字并换行"
+  }
+}

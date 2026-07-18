@@ -1,0 +1,11 @@
+[
+  {
+    "classId": "class_demo_stm32",
+    "name": "STM32物联网仿真实验演示班",
+    "teacherId": "user_teacher_demo",
+    "joinCode": "STM32-DEMO",
+    "description": "用于参赛演示的固定班级数据。",
+    "createdAt": "2026-07-18T00:00:00.000Z",
+    "updatedAt": "2026-07-18T00:00:00.000Z"
+  }
+]

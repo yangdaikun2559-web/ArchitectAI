@@ -1,0 +1,48 @@
+{
+  "id": "comp_27",
+  "name": "HC-05 蓝牙串口透传模块",
+  "type": "UART",
+  "category": "Other",
+  "pinsUsed": 2,
+  "voltage": "Both",
+  "active": true,
+  "description": "主从一体蓝牙串行总线透传模块，支持标准 SPP 协议与手机通信",
+  "macroPrefix": "BT",
+  "cadLayout": {
+    "width": 160,
+    "height": 90,
+    "renderType": "generic_board",
+    "pins": [
+      {
+        "name": "VCC",
+        "offsetY": 18,
+        "type": "VCC"
+      },
+      {
+        "name": "GND",
+        "offsetY": 36,
+        "type": "GND"
+      },
+      {
+        "name": "TX",
+        "offsetY": 54,
+        "type": "UART_TX"
+      },
+      {
+        "name": "RX",
+        "offsetY": 72,
+        "type": "UART_RX"
+      }
+    ]
+  },
+  "drivers": {
+    "platformioLibs": [],
+    "includes": [
+      "#include <SoftwareSerial.h>"
+    ],
+    "defines": [],
+    "globalInstantiation": "SoftwareSerial btSerial(PIN_{{MACRO_PREFIX}}_TX, PIN_{{MACRO_PREFIX}}_RX);",
+    "setupCode": "btSerial.begin(9600);",
+    "apiDocumentation": "int read(); - 读取手机发送的一个字符字节\nsize_t write(uint8_t c); - 向连接的蓝牙手机发送一个字节"
+  }
+}
