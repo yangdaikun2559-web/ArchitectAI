@@ -1578,7 +1578,19 @@ function buildLocalPortraitDimensions(submissions: LearningSubmission[]): Learni
     grouped.set(submission.taskType, list);
   });
 
-  return Array.from(grouped.entries()).map(([taskType, list]) => {
+  return LEARNING_TASK_ORDER.map(taskType => {
+    const list = grouped.get(taskType) || [];
+    if (!list.length) {
+      const dimensionName = getTaskDimensionName(taskType);
+      return {
+        name: dimensionName,
+        level: "risk" as const,
+        score: 0,
+        evidence: "暂无该维度提交证据，不能判断真实掌握情况。",
+        suggestion: `建议先补齐“${dimensionName}”任务提交，再结合客观题和简答题进行复核。`,
+      };
+    }
+
     const scored = list
       .map(item => item.score)
       .filter((score): score is number => typeof score === "number" && !Number.isNaN(score));
@@ -1598,7 +1610,7 @@ function buildLocalPortraitDimensions(submissions: LearningSubmission[]): Learni
         ? `建议教师针对“${getTaskDimensionName(taskType)}”安排讲解、演示或错题复盘。`
         : `可以让学生在“${getTaskDimensionName(taskType)}”上进一步解释依据，提升表达完整度。`,
     };
-  }).sort((a, b) => (a.score ?? 0) - (b.score ?? 0)).slice(0, 6);
+  }).sort((a, b) => (a.score ?? 0) - (b.score ?? 0));
 }
 
 function buildTeachingFocus(dimensions: LearningPortrait["dimensions"] = []): LearningPortrait["teachingFocus"] {
@@ -1637,7 +1649,7 @@ function normalizePortrait(
       title: String(item?.title || item?.name || "课堂讲解重点"),
       reason: String(item?.reason || item?.evidence || "来自学习过程画像的诊断结果。"),
       action: String(item?.action || item?.suggestion || "结合学生提交记录安排讲解、演示或错题复盘。"),
-    })).filter(item => item.title).slice(0, 4);
+    })).filter(item => item.title).slice(0, 5);
   };
   const dimensions = Array.isArray(value?.dimensions)
     ? value.dimensions.map((item: any) => {
@@ -1650,7 +1662,7 @@ function normalizePortrait(
         evidence: String(item?.evidence || "暂无明确证据。"),
         suggestion: String(item?.suggestion || "建议结合提交记录继续观察。"),
       };
-    }).slice(0, 6)
+    }).slice(0, 8)
     : undefined;
   return {
     scope,
@@ -1727,9 +1739,11 @@ async function generateLearningPortraitWithAi(
 
 要求：
 1. 不给学生贴负面标签，只做教学诊断。
-2. 聚焦：需求理解、器件接口、接线安全、代码理解、工程迁移、反思改进。
-3. 输出要便于教师调整教学。
-4. 返回严格 JSON，不要 Markdown。
+2. 必须按 8 个学习步骤完整输出维度：需求理解、器件选型、接口识别、虚拟接线、安全判断、代码理解、工程迁移、反思改进。即使某个维度没有提交证据，也要保留该维度，并明确写“暂无该维度提交证据”。
+3. 每个维度的 evidence 要写清楚依据：提交数量、客观题正确率、AI/教师评分、简答题表现或证据不足，不要只写笼统判断。
+4. ${scope === "class" ? "班级画像要总结共性表现、集中薄弱点和课堂补救动作，不暴露单个学生姓名。" : "学生画像要给出该生每个步骤的表现、缺失任务和下一次修改建议。"}
+5. 输出要便于教师调整教学，建议要能直接转化为讲解、演示、追问、补做或复盘任务。
+6. 返回严格 JSON，不要 Markdown。
 
 画像对象：${title}
 覆盖数据：提交 ${coverage.submissions} 条，覆盖步骤 ${coverage.completedTasks} 个，平均分 ${coverage.averageAiScore ?? "暂无"}
@@ -1741,16 +1755,16 @@ ${evidence}
 {
   "summary": "总体画像，2-4 句",
   "tags": ["3-5 个学习特征标签"],
-  "strengths": ["优势表现"],
-  "risks": ["需要关注的风险或薄弱点"],
-  "suggestions": ["下一步教学或辅导建议"],
+  "strengths": ["3-5 条优势表现，每条要带证据或现象"],
+  "risks": ["3-5 条需要关注的风险或薄弱点，每条要说明原因"],
+  "suggestions": ["3-5 条下一步教学或辅导建议，要具体可执行"],
   "dimensions": [
     {
-      "name": "需求理解/器件选型/接口识别/虚拟接线/安全判断/代码理解/工程迁移/反思改进",
+      "name": "必须分别输出：需求理解/器件选型/接口识别/虚拟接线/安全判断/代码理解/工程迁移/反思改进",
       "level": "strong/stable/developing/risk",
       "score": 0-100,
-      "evidence": "来自提交记录的证据",
-      "suggestion": "针对该维度的教学建议"
+      "evidence": "提交数、答题表现、评分、简答证据或暂无证据",
+      "suggestion": "针对该维度的教学建议，写清教师下一步怎么做"
     }
   ],
   "focusItems": ["教师下一步最应该关注的 2-4 个点"],

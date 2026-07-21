@@ -14,7 +14,7 @@ export default defineConfig(() => {
     server: {
       hmr: true,
       watch: {
-        ignored: ['**/*.md', '**/*.zip', '**/*.log', '**/dist/**', '**/.git/**', '**/data/**']
+        ignored: ['**/*.md', '**/*.zip', '**/*.log', '**/dist/**', '**/.git/**', '**/data/**', '**/tmp/**']
       },
     },
   };

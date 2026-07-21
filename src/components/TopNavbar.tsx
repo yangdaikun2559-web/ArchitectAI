@@ -4,11 +4,15 @@ import { useLanguage } from '../lib/LanguageContext';
 import { Cpu, LogOut, LogIn, Bell, Monitor, HelpCircle, Languages } from 'lucide-react';
 import { api } from '../lib/api';
 import { ClassJoinRequest } from '../types';
+import { HelpDocsModal } from './HelpDocsModal';
+import { maskStudentName } from '../lib/privacy';
 
 export const TopNavbar: React.FC = () => {
   const { user, profile, signIn, signOut } = useAuth();
   const { toggleLanguage, t } = useLanguage();
+  const brandSub = t('brandSub');
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showHelpDocs, setShowHelpDocs] = useState(false);
   const [joinRequests, setJoinRequests] = useState<ClassJoinRequest[]>([]);
   const [noticeLoading, setNoticeLoading] = useState(false);
   const isTeacherLike = profile?.role === 'teacher' || profile?.role === 'admin' || profile?.role === 'superadmin';
@@ -55,7 +59,9 @@ export const TopNavbar: React.FC = () => {
           </div>
           <div>
             <h1 className="font-display font-bold text-neutral-900 text-sm tracking-tight">{t('brandTitle')}</h1>
-            <p className="text-[10px] font-mono text-neutral-400 font-medium">{t('brandSub')}</p>
+            {brandSub && (
+              <p className="text-[10px] font-mono text-neutral-400 font-medium">{brandSub}</p>
+            )}
           </div>
         </div>
 
@@ -106,7 +112,7 @@ export const TopNavbar: React.FC = () => {
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <div className="truncate text-xs font-black text-neutral-950">
-                            {isTeacherLike ? request.studentName : request.className}
+                            {isTeacherLike ? maskStudentName(request.studentName, request.studentId) : request.className}
                           </div>
                           <div className="mt-1 text-[11px] text-neutral-500">
                             {isTeacherLike
@@ -159,7 +165,13 @@ export const TopNavbar: React.FC = () => {
           <button className="p-1.5 text-neutral-400 hover:text-neutral-900 rounded-lg transition hover:bg-neutral-50">
             <Monitor className="w-4.5 h-4.5" />
           </button>
-          <button className="p-1.5 text-neutral-400 hover:text-neutral-900 rounded-lg transition hover:bg-neutral-50">
+          <button
+            type="button"
+            onClick={() => setShowHelpDocs(true)}
+            className="p-1.5 text-neutral-400 hover:text-neutral-900 rounded-lg transition hover:bg-neutral-50"
+            title="系统帮助文档"
+            aria-label="系统帮助文档"
+          >
             <HelpCircle className="w-4.5 h-4.5" />
           </button>
           <button 
@@ -201,6 +213,10 @@ export const TopNavbar: React.FC = () => {
           )}
         </div>
       </div>
+      <HelpDocsModal
+        isOpen={showHelpDocs}
+        onClose={() => setShowHelpDocs(false)}
+      />
     </header>
   );
 };

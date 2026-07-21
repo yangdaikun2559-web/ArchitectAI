@@ -54,7 +54,7 @@ export const RequirementInput: React.FC<RequirementInputProps> = ({ onSubmit, is
   };
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="mx-auto w-full max-w-4xl space-y-8">
       {/* Intro Greetings card */}
       <div className="space-y-4">
         <div className="space-y-2">

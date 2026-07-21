@@ -9,4 +9,5 @@ coverage/
 scratch/
 tmp/
 .vite/
+.codex_tmp*
 

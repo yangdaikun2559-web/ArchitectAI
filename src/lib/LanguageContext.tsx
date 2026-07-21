@@ -13,8 +13,8 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const translations: Record<Language, Record<string, string>> = {
   zh: {
     // TopNavbar
-    brandTitle: "物联网智能生成平台",
-    brandSub: "项目生成器",
+    brandTitle: "物联网仿真生成平台",
+    brandSub: "",
     signIn: "接入账户",
     signOut: "退出",
     // Sidebar
@@ -22,9 +22,9 @@ const translations: Record<Language, Record<string, string>> = {
     step1: "1. 需求输入",
     step2: "2. 提示词优化",
     step3: "3. 方案流生成",
-    step4: "4. 电路图预览",
-    step5: "5. 代码包预览",
-    step6: "6. 学习任务评价",
+    step4: "3. 电路图预览",
+    step5: "4. 代码包预览",
+    step6: "5. 学习任务评价",
     records: "数据与记录",
     history: "历史生成项目",
     admin: "控制后台管理",
@@ -276,9 +276,9 @@ const translations: Record<Language, Record<string, string>> = {
     step1: "1. Requirement Input",
     step2: "2. Prompt Optimize",
     step3: "3. Generation Progress",
-    step4: "4. Schematic Preview",
-    step5: "5. Code Package Preview",
-    step6: "6. Learning Assessment",
+    step4: "3. Schematic Preview",
+    step5: "4. Code Package Preview",
+    step6: "5. Learning Assessment",
     records: "Records & History",
     history: "History Projects",
     classManagement: "Class Management",

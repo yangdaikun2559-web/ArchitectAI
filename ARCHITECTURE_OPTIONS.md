@@ -1,242 +1,395 @@
 # ArchitectAI 架构方案探索与比较
 
-## 1. 当前架构画像
+## 1. 当前系统画像
 
-当前项目是一个面向物联网教学课件/生成平台的 Vite + React + Express 应用：
+ArchitectAI 目前是一个面向物联网教学、课件演示和项目生成的 `React + Vite + Express` 应用。它已经具备比较完整的演示链路：需求输入、提示词优化、AI 生成固件工程、接线关系、BOM、代码预览、下载、课堂管理、学习提交和教师反馈。
 
-- 前端：`src/App.tsx` 负责生成主流程、项目状态、历史、课堂、下载等顶层编排；`src/components/*` 承担 CAD 接线图、代码查看、课堂管理、下载中心、管理后台等 UI。
-- 后端：`server.ts` 是单文件 Express 服务，包含数据读写、认证鉴权、课堂管理、AI 提示词优化、项目生成、RAG 检索、Keil/PlatformIO 模板处理、硬件校验和 Vite 开发服务。
-- 数据：`data/*.json` 和 `parts/*.json` 作为本地文件数据库，`projects.json` 已经达到数十 MB 级别。
-- AI/硬件域：`src/lib/ragEngine.ts`、`componentResolver.ts`、`pinAllocator.ts`、`hardwareLinter.ts` 已经形成初步的“硬件知识库 + 生成后校验”能力。
+当前主要结构如下：
 
-这套结构很适合快速演示和比赛交付，但主要压力点也很集中：
+```text
+前端 React
+  src/App.tsx
+  src/components/*
+  src/lib/api.ts
+  src/lib/{ragEngine,pinAllocator,hardwareLinter,componentResolver,codeSync}.ts
 
-- `server.ts` 同时处理 API、领域逻辑、文件存储、AI 编排和模板处理，后续改动风险高。
-- 前端顶层状态集中在 `App.tsx`，生成流程、课堂流程和项目预览耦合较紧。
-- 本地 JSON 文件缺少并发保护、索引、迁移和权限边界，课堂长期使用时容易出现性能与一致性问题。
-- 认证目前基于 `localStorage` 中的用户资料和 `x-user-id` 请求头，适合演示，不适合真实多用户环境。
-- 大量中文内容存在编码异常，会影响 UI 文案、提示词质量、RAG 命中率和文档观感。
+后端 Express
+  server.ts
 
-## 2. 目标拆分
+本地数据
+  data/*.json
+  parts/*.json
+  data/templates/stm32/*
 
-建议先把项目目标分成三类，因为不同目标对应的最佳架构不一样：
+构建与部署
+  Vite + esbuild
+  Dockerfile / render.yaml / 腾讯云部署说明
+```
 
-- 参赛/演示目标：稳定跑通 10 分钟演示、减少现场失败、保证生成结果可解释。
-- 教学落地目标：支持班级、学生作品、提交反馈、课堂活动数据沉淀。
-- 产品化目标：支持多用户并发、权限隔离、异步生成、可观测性、部署和数据迁移。
+从代码看，当前后端接口已经覆盖：
 
-## 3. 方案一：保留当前单体，做演示级加固
+- 公共硬件查询：`/api/components`、`/api/mcus`
+- AI 生成：`/api/optimize-prompt`、`/api/generate-project`
+- 课堂管理：教师班级、学生加入、成员、提交、反馈、学习画像
+- 本地认证：注册、登录、基于 `x-user-id` 的用户识别
+- 项目管理：项目列表、保存、删除
+- 管理后台：MCU、元器件、用户管理
+
+当前数据文件中，`data/projects.json` 已接近 40MB，说明项目结果和生成产物已经成为主要存储压力点。
+
+## 2. 关键压力点
+
+### 2.1 后端单文件过重
+
+`server.ts` 同时承担了：
+
+- Express 启动和中间件
+- 本地 JSON 数据库读写
+- 认证和权限判断
+- 课堂业务
+- 项目业务
+- 硬件库业务
+- AI 调用和提示词编排
+- RAG 检索
+- Keil / PlatformIO 工程后处理
+- 学习提交 AI 评价和画像生成
+- Vite 开发服务挂载
+
+这对演示很高效，但后续维护风险会快速上升：任何小改动都容易影响不相关业务。
+
+### 2.2 前端顶层编排集中
+
+`src/App.tsx` 承担了主流程状态、生成流程、项目预览、历史、课堂、下载中心、管理员入口等顶层编排。随着课堂功能和生成流程继续增加，`App.tsx` 会变成前端的第二个“大中枢”。
+
+### 2.3 JSON 文件数据层已经到边界
+
+本地 JSON 数据适合早期开发和参赛演示，但它存在天然限制：
+
+- 缺少并发写入保护
+- 缺少索引
+- 大文件读写性能差
+- 不适合做权限隔离和历史迁移
+- 生成产物长期堆积后容易拖慢项目列表、保存和部署
+
+### 2.4 AI 生成是长耗时流程
+
+`/api/generate-project` 是典型的长请求：组件解析、RAG、引脚分配、模型生成、结果修复、硬件校验、工程文件拼装。现在前端用模拟日志补足体验，但后端实际仍是“一次 HTTP 请求等到底”。
+
+### 2.5 认证适合演示，不适合真实多用户
+
+当前本地认证依赖 `localStorage` 中的用户信息和请求头 `x-user-id`。这对本机演示很方便，但真实课堂环境至少需要服务端会话、JWT、Cookie session 或接入成熟身份服务。
+
+## 3. 架构目标拆分
+
+不同目标对应不同的最优架构，建议先把目标分成三层：
+
+| 目标 | 关注点 | 架构偏好 |
+| --- | --- | --- |
+| 参赛演示 | 稳定、可控、改动小、10 分钟流程不翻车 | 保守加固 |
+| 校内试用 | 班级、学生提交、教师反馈、长期保存 | 模块化单体 + 正规数据层 |
+| 产品化 | 多学校、多租户、异步生成、扩容、监控 | 任务流水线，后续再服务拆分 |
+
+## 4. 方案一：保留当前单体，做演示级加固
 
 ### 结构
 
-继续使用 `React + Vite + Express + JSON 文件`，只做低风险整理：
+继续使用：
 
-- 把 `server.ts` 中的常量、prompt、文件模板、课堂路由拆到局部模块。
-- 保留 JSON 文件数据库。
-- 增加启动检查、错误兜底、生成结果缓存、关键接口日志。
-- 修复中文编码和演示文案。
+```text
+React + Vite + Express + JSON files
+```
+
+只做低风险整理：
+
+- 修复乱码文案、演示数据和默认项目内容
+- 给生成接口增加更清晰的错误兜底
+- 给 JSON 文件读写增加备份、写入临时文件和异常恢复
+- 清理 `projects.json` 中过大的历史演示数据
+- 增加启动健康检查和关键接口日志
+- 把 prompt、模板常量和少量工具函数从 `server.ts` 中抽离
 
 ### 优点
 
-- 改动小，最快能提升稳定性。
-- 不影响现有演示流程。
-- 适合比赛截止期临近时使用。
+- 改动最小，最快提升演示稳定性
+- 不改变当前部署方式
+- 对比赛、录屏、线下展示最稳
 
 ### 缺点
 
-- 仍然是“胖 server + 胖 App”的结构。
-- 真实多用户、并发写入和数据迁移问题没有根治。
-- 后续功能越多，维护成本会快速上升。
+- 没有根治 `server.ts` 和 `App.tsx` 过重
+- JSON 数据层仍然不适合真实并发
+- AI 长请求仍不可恢复、不可追踪
 
-### 适用场景
+### 适合场景
 
-如果目标是近期参赛、录视频、线下展示，这是最稳的短期方案。
+适合近期要交材料、录制视频、现场演示、答辩前冲刺。
 
-## 4. 方案二：模块化单体
+## 5. 方案二：模块化单体
 
 ### 结构
 
-保留单个 Node 服务和 React 前端，但按业务域拆分：
+保留一个 Node 服务和一个 React 前端，但按业务域拆分。
+
+建议后端结构：
+
+```text
+server/
+  app.ts
+  config/
+  routes/
+    auth.routes.ts
+    generation.routes.ts
+    classroom.routes.ts
+    projects.routes.ts
+    hardware.routes.ts
+    admin.routes.ts
+  middleware/
+    auth.middleware.ts
+    error.middleware.ts
+  services/
+    generation.service.ts
+    classroom.service.ts
+    project.service.ts
+    hardware.service.ts
+    learning-review.service.ts
+  repositories/
+    user.repository.ts
+    project.repository.ts
+    classroom.repository.ts
+    hardware.repository.ts
+  ai/
+    modelClient.ts
+    promptCompiler.ts
+    resultParser.ts
+  hardware/
+    componentResolver.ts
+    pinAllocator.ts
+    hardwareLinter.ts
+  templates/
+    keilProject.ts
+```
+
+建议前端结构：
 
 ```text
 src/
   app/
-    routes/
-    pages/
-    flows/
+    Dashboard.tsx
+    routes.ts
   features/
     generation/
     classroom/
     projects/
-    hardware-catalog/
+    hardware/
     admin/
   shared/
-    api-client/
-    schemas/
+    api/
     ui/
-
-server/
-  routes/
-    generation.routes.ts
-    classroom.routes.ts
-    projects.routes.ts
-    admin.routes.ts
-  services/
-    generation.service.ts
-    classroom.service.ts
-    hardware.service.ts
-    auth.service.ts
-  repositories/
-    project.repository.ts
-    class.repository.ts
-    component.repository.ts
-  ai/
-    modelClient.ts
-    promptCompiler.ts
-    resultNormalizer.ts
-  hardware/
-    pinAllocator.ts
-    hardwareLinter.ts
-    componentResolver.ts
+    types/
 ```
 
-数据层建议从 JSON 文件迁移到 SQLite：
+数据层建议从 JSON 迁移到 SQLite：
 
-- 本地/单机教学：SQLite + Prisma 或 Drizzle。
-- 云端教学：PostgreSQL。
-- 硬件元器件库仍可保留 JSON 种子文件，但运行时入库管理。
+```text
+短期：SQLite + better-sqlite3 或 Drizzle
+中期：PostgreSQL
+静态种子：保留 components.json / mcus.json 作为导入源
+大产物：生成 zip、代码包、日志转入 artifacts 目录或对象存储
+```
 
 ### 优点
 
-- 复用现有代码最多，风险可控。
-- 能明显降低 `server.ts` 和 `App.tsx` 的维护压力。
-- 可以逐步替换存储层，不需要一次推翻。
-- 非常适合“从课件项目走向学校内测”。
+- 复用现有代码最多
+- 能明显降低维护压力
+- 对校内试用足够稳
+- 可以逐步迁移，不需要一次推翻
+- 为后续异步任务留下清晰边界
 
 ### 缺点
 
-- 仍然是单进程架构，AI 生成耗时会阻塞体验，需要额外设计任务状态。
-- 如果未来并发很高，还需要进一步拆 worker 或队列。
+- 仍是单进程服务
+- AI 长任务如果不额外改造，仍会阻塞请求体验
+- 需要补充迁移脚本和基础测试
 
-### 适用场景
+### 适合场景
 
-这是当前仓库最推荐的主路径。它兼顾比赛交付、教学落地和后续产品化。
+这是当前仓库最推荐的主线。它兼顾参赛交付、课堂落地和后续产品化。
 
-## 5. 方案三：事件驱动生成流水线
+## 6. 方案三：事件驱动生成流水线
 
 ### 结构
 
-把“项目生成”从普通 HTTP 请求改成任务流水线：
+把“项目生成”从一次长 HTTP 请求改为 job 流水线。
 
 ```text
 用户提交需求
   -> 创建 generation_job
-  -> Prompt 优化任务
-  -> 硬件检索/器件解析任务
-  -> 引脚分配任务
-  -> AI 代码生成任务
-  -> 静态校验/硬件校验任务
-  -> 生成 ZIP/README/CAD 产物
-  -> 前端轮询或 SSE/WebSocket 展示进度
+  -> Prompt 优化
+  -> 元器件解析 / RAG 检索
+  -> 引脚分配
+  -> AI 代码生成
+  -> 结果解析与修复
+  -> 硬件校验
+  -> 工程产物打包
+  -> 前端通过轮询 / SSE / WebSocket 查看进度
 ```
 
-实现可以从轻到重：
+轻量实现：
 
-- 轻量版：SQLite job 表 + Node 内存 worker。
-- 稳定版：BullMQ + Redis。
-- 云端版：Cloud Tasks / PubSub / serverless worker。
+```text
+SQLite jobs 表
+Node 内置 worker 队列
+前端轮询 /api/generation-jobs/:id
+```
+
+稳定实现：
+
+```text
+PostgreSQL
+BullMQ + Redis
+独立 worker 进程
+SSE 推送进度
+```
 
 ### 优点
 
-- 生成过程更可观察，天然适合当前的 `TaskProgress` UI。
-- 失败可重试，能保存每一步中间产物。
-- 方便做“双模型比较”“生成质量评分”“教师查看学生过程日志”。
+- 生成过程可观察、可恢复、可重试
+- 很适合当前 `TaskProgress` UI
+- 教师可以看到学生生成过程日志
+- 支持双模型比较、质量评分、失败重跑
+- 大幅减少“页面等很久但不知道发生了什么”的体验问题
 
 ### 缺点
 
-- 比方案二复杂，需要引入任务状态模型。
-- 本地开发、部署和错误处理都要更严谨。
+- 比模块化单体复杂
+- 需要设计 job 状态、日志、重试和超时
+- 部署需要多一个 worker 或队列组件
 
-### 适用场景
+### 适合场景
 
-当你希望平台从“点击后等待结果”升级为“可解释的 AI 工程编译器”时，这个方案价值最大。
+适合平台从“演示型 AI 生成器”升级为“可解释的 AI 工程编译器”时采用。
 
-## 6. 方案四：云原生多服务平台
+## 7. 方案四：云原生多服务平台
 
 ### 结构
 
-将系统拆成多个服务：
+拆成多个服务：
 
-- Web App：React/Next.js。
-- API Gateway/BFF：认证、权限、聚合接口。
-- Generation Service：AI 生成、模型选择、prompt 编排。
-- Hardware Knowledge Service：元器件库、RAG、版本化规则。
-- Classroom Service：班级、成员、作业、反馈。
-- Artifact Service：ZIP、代码包、CAD 图、编译日志存储。
-- Database：PostgreSQL / Firestore。
-- Object Storage：生成产物与模板。
+```text
+Web App
+API Gateway / BFF
+Auth Service
+Generation Service
+Hardware Knowledge Service
+Classroom Service
+Artifact Service
+PostgreSQL / Firestore
+Object Storage
+Queue / Worker
+Observability
+```
 
 ### 优点
 
-- 扩展性、权限边界和服务独立演进最好。
-- 适合多学校、多租户、长期 SaaS。
-- 生成服务可以独立扩容和限流。
+- 扩展性最好
+- 权限边界最清晰
+- 适合多学校、多租户、长期 SaaS
+- 生成服务可以独立限流、扩容和容灾
 
 ### 缺点
 
-- 当前阶段成本最高。
-- 会显著增加部署、监控、权限、数据一致性和运维复杂度。
-- 对参赛/课件交付而言投入偏重。
+- 当前阶段成本最高
+- 会显著增加部署、监控、鉴权、数据一致性和运维复杂度
+- 容易把精力从教学体验和生成质量转移到基础设施
 
-### 适用场景
+### 适合场景
 
-适合已经完成教学验证、准备产品化或商业化推广之后再做。
+适合已经完成校内试用，有真实用户增长和商业化计划之后再做。
 
-## 7. 横向比较
+## 8. 横向比较
 
-| 维度 | 方案一：演示级加固 | 方案二：模块化单体 | 方案三：事件驱动流水线 | 方案四：云原生多服务 |
+| 维度 | 方案一：演示级加固 | 方案二：模块化单体 | 方案三：生成流水线 | 方案四：多服务平台 |
 | --- | --- | --- | --- | --- |
 | 改造成本 | 低 | 中 | 中高 | 高 |
 | 对现有代码复用 | 很高 | 高 | 中高 | 中 |
-| 近期参赛稳定性 | 高 | 中高 | 中 | 低 |
-| 教学长期使用 | 低 | 高 | 高 | 高 |
-| AI 生成可观察性 | 中 | 中 | 高 | 高 |
-| 多用户并发 | 低 | 中 | 中高 | 高 |
+| 近期参赛稳定性 | 很高 | 高 | 中 | 低 |
+| 校内长期使用 | 低 | 高 | 高 | 高 |
+| AI 生成可观察性 | 低 | 中 | 高 | 高 |
+| 并发能力 | 低 | 中 | 中高 | 高 |
+| 数据可靠性 | 低 | 高 | 高 | 高 |
 | 部署复杂度 | 低 | 中 | 中高 | 高 |
-| 后续可维护性 | 中低 | 高 | 高 | 高 |
+| 维护边界清晰度 | 低 | 高 | 高 | 很高 |
+| 适合当前阶段 | 临时可选 | 最推荐 | 第二阶段引入 | 暂缓 |
 
-## 8. 推荐路线
+## 9. 推荐路线
 
-推荐采用“方案一 + 方案二为主，预留方案三接口”的渐进式路线：
+推荐采用：
 
-1. 先做演示稳定化：修复中文编码、清理 demo 数据、补齐错误提示、保证生成和下载路径稳定。
-2. 再做模块化单体：拆 `server.ts`，拆 `App.tsx`，建立 `generation/classroom/hardware/projects` 四个业务域。
-3. 数据层迁移：从 JSON 文件迁移到 SQLite，保留 JSON 作为种子数据和导入导出格式。
-4. 生成流水线化：把 `/api/generate-project` 从一次性长请求改成 job，前端通过 job 状态显示步骤。
-5. 最后再考虑云服务拆分：只有当学校试用、多班级并发和长期数据沉淀成为真实需求时，再进入方案四。
+```text
+方案一的稳定化动作
+  + 方案二的模块化单体作为主线
+  + 为方案三预留 job 边界
+  + 暂缓方案四
+```
 
-## 9. 第一阶段建议拆分清单
+具体路线：
 
-### 后端
+### 阶段 1：演示稳定化
 
-- `server/db/fileDb.ts`：封装当前 `readDbFile` / `writeDbFile`。
-- `server/auth/auth.middleware.ts`：封装 `getRequestUser`、`checkTeacher`、`checkAdmin`。
-- `server/routes/classroom.routes.ts`：迁移课堂相关路由。
-- `server/routes/projects.routes.ts`：迁移项目 CRUD。
-- `server/routes/hardware.routes.ts`：迁移元器件和 MCU 查询/管理。
-- `server/routes/generation.routes.ts`：保留提示词优化和项目生成入口。
-- `server/services/generation.service.ts`：集中 AI 调用、RAG、解析、引脚分配、校验、后处理。
+- 修复乱码和演示项目文案
+- 清理或归档过大的 `projects.json`
+- 给 JSON 写入增加备份和原子写入
+- 给 AI 接口增加统一错误返回
+- 保证生成、预览、下载三条演示路径稳定
 
-### 前端
+### 阶段 2：后端模块化
 
-- `src/features/generation/`：需求输入、提示词优化、任务进度、项目预览、代码下载。
-- `src/features/classroom/`：班级、加入申请、作业提交、教师反馈。
-- `src/features/hardware/`：元器件管理、BOM、接线图、引脚表。
-- `src/features/admin/`：管理后台。
-- `src/shared/api/`：统一 API client 和错误处理。
+- 拆出 `server/app.ts`
+- 拆出 `server/routes/*`
+- 拆出 `server/services/*`
+- 拆出 `server/repositories/*`
+- 把 `readDbFile` / `writeDbFile` 封装成 repository 层
+- 把 AI 调用、RAG、硬件校验、工程后处理收进 `generation.service.ts`
 
-## 10. 结论
+### 阶段 3：前端功能域整理
 
-当前项目最值得避免的是“一步到位微服务化”。它会把主要精力消耗在部署和服务治理上，而当前真正的瓶颈是边界混杂、数据层脆弱、生成流程不可恢复、中文内容资产受损。
+- 把生成链路放到 `src/features/generation`
+- 把课堂功能放到 `src/features/classroom`
+- 把管理员功能放到 `src/features/admin`
+- 把硬件相关展示和编辑放到 `src/features/hardware`
+- 把 API client、通用类型、基础 UI 放到 `src/shared`
 
-最优解是先做模块化单体：让参赛演示继续稳定，同时为课堂真实使用准备清晰的业务边界。等生成任务、课堂作业和硬件知识库都沉淀出稳定模型后，再把生成流水线独立出来。
+### 阶段 4：数据层迁移
+
+- 新增 SQLite 数据库
+- 设计 users、projects、classes、members、submissions、components、mcus 表
+- 编写 `data/*.json -> SQLite` 的一次性迁移脚本
+- 生成产物从项目主表中拆出，避免项目列表读取大块代码内容
+- 保留 JSON 文件作为导入导出和种子数据
+
+### 阶段 5：生成任务流水线
+
+- 新增 `generation_jobs` 表
+- `/api/generate-project` 改为创建 job
+- 新增 `/api/generation-jobs/:jobId`
+- 前端 `TaskProgress` 从模拟日志改为读取真实日志
+- 后端 worker 分步写入状态和中间结果
+
+## 10. 建议的第一批落地任务
+
+优先级从高到低：
+
+1. 修复可见中文乱码和演示文案。
+2. 给本地 JSON 数据库增加安全写入：临时文件、备份文件、异常恢复。
+3. 清理 `projects.json`，把大字段和历史演示数据归档。
+4. 从 `server.ts` 拆出 `server/db/fileDb.ts`、`server/middleware/auth.ts`、`server/routes/projects.routes.ts`。
+5. 从 `server.ts` 拆出 `server/routes/classroom.routes.ts` 和 `server/services/classroom.service.ts`。
+6. 把 AI 生成相关逻辑集中到 `server/services/generation.service.ts`。
+7. 前端先拆 `src/features/generation`，减少 `App.tsx` 的生成流程状态。
+8. 设计 SQLite schema，但先不强制迁移所有功能。
+
+## 11. 结论
+
+当前最不建议“一步到位微服务化”。项目真正的瓶颈不是服务数量，而是边界混在一起、数据层脆弱、生成流程不可恢复，以及前后端中枢文件过重。
+
+最优路线是先做模块化单体：保持当前演示和部署方式基本不变，同时建立清晰的业务边界。等课堂试用稳定后，再把 AI 生成独立成任务流水线。多服务和云原生平台应作为产品化之后的第三阶段，而不是当前第一步。

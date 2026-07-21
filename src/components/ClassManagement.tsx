@@ -22,6 +22,7 @@ import {
 import { ClassMember, ClassRoom, ClassTeacherMember, LearningPortrait, LearningQuestion, LearningSubmission } from '../types';
 import { api } from '../lib/api';
 import { useAuth } from '../lib/AuthContext';
+import { maskStudentDisplayName, maskStudentName } from '../lib/privacy';
 
 const taskLabels: Record<string, string> = {
   requirement: '需求分析',
@@ -43,16 +44,27 @@ function formatTime(value: string | undefined) {
   return new Date(value).toLocaleString();
 }
 
+function getMaskedMemberName(member: ClassMember) {
+  return maskStudentDisplayName(member.displayName, member.userId);
+}
+
+function getMaskedSubmissionStudentName(submission: LearningSubmission) {
+  return maskStudentName(submission.studentName, submission.studentId);
+}
+
 function parseSubmissionContent(content: string) {
   try {
     const parsed = JSON.parse(content);
-    if (parsed && Array.isArray(parsed.prompts) && Array.isArray(parsed.responses)) {
+    if (
+      parsed &&
+      ((Array.isArray(parsed.prompts) && Array.isArray(parsed.responses)) || Array.isArray(parsed.steps))
+    ) {
       return parsed as {
         task?: string;
         rubric?: string;
         questions?: LearningQuestion[];
-        prompts: string[];
-        responses: string[];
+        prompts?: string[];
+        responses?: string[];
         objectiveSummary?: {
           total: number;
           correct: number;
@@ -98,6 +110,20 @@ function clampPortraitScore(score: number | undefined) {
   return Math.max(0, Math.min(100, score ?? 0));
 }
 
+function getPortraitLevelLabel(level: string) {
+  if (level === 'strong') return '优势稳定';
+  if (level === 'stable') return '基本达标';
+  if (level === 'risk') return '重点预警';
+  return '发展中';
+}
+
+function getPortraitLevelBadgeStyle(level: string) {
+  if (level === 'strong') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+  if (level === 'stable') return 'bg-sky-50 text-sky-700 border-sky-200';
+  if (level === 'risk') return 'bg-rose-50 text-rose-700 border-rose-200';
+  return 'bg-amber-50 text-amber-700 border-amber-200';
+}
+
 export const ClassManagement: React.FC = () => {
   const { profile } = useAuth();
   const [classes, setClasses] = useState<ClassRoom[]>([]);
@@ -129,6 +155,7 @@ export const ClassManagement: React.FC = () => {
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [memberToTransfer, setMemberToTransfer] = useState<ClassMember | null>(null);
   const [memberToEdit, setMemberToEdit] = useState<ClassMember | null>(null);
+  const [memberToRemove, setMemberToRemove] = useState<ClassMember | null>(null);
   const [transferTargetClassId, setTransferTargetClassId] = useState('');
   const [editStudentName, setEditStudentName] = useState('');
   const [editStudentUsername, setEditStudentUsername] = useState('');
@@ -146,6 +173,14 @@ export const ClassManagement: React.FC = () => {
   const selectedSubmission = submissions.find(item => item.submissionId === selectedSubmissionId) || null;
   const selectedMember = members.find(item => item.userId === selectedMemberId) || null;
   const portraitStudentId = listMode === 'students' ? selectedMember?.userId : selectedSubmission?.studentId;
+  const portraitStudentRawName = listMode === 'students'
+    ? selectedMember?.displayName || selectedMember?.userId
+    : selectedSubmission?.studentName || selectedSubmission?.studentId;
+  const portraitStudentMaskedName = listMode === 'students' && selectedMember
+    ? getMaskedMemberName(selectedMember)
+    : selectedSubmission
+      ? getMaskedSubmissionStudentName(selectedSubmission)
+      : undefined;
   const submittedCount = submissions.filter(item => item.status === 'submitted').length;
   const reviewedCount = submissions.filter(item => item.status === 'reviewed').length;
   const parsedContent = selectedSubmission ? parseSubmissionContent(selectedSubmission.content) : null;
@@ -157,6 +192,14 @@ export const ClassManagement: React.FC = () => {
     ? Math.round(portraitDimensions.reduce((sum, item) => sum + clampPortraitScore(item.score), 0) / portraitDimensions.length)
     : undefined;
   const portraitWeakCount = portraitDimensions.filter(item => item.level === 'risk' || item.level === 'developing').length;
+  const portraitStrongCount = portraitDimensions.filter(item => item.level === 'strong' || item.level === 'stable').length;
+  const portraitMissingCount = Math.max(0, 8 - (learningPortrait?.coverage.completedTasks || 0));
+  const portraitRiskDimensions = portraitDimensions
+    .filter(item => item.level === 'risk' || item.level === 'developing')
+    .sort((a, b) => clampPortraitScore(a.score) - clampPortraitScore(b.score));
+  const portraitTopDimension = portraitDimensions
+    .slice()
+    .sort((a, b) => clampPortraitScore(b.score) - clampPortraitScore(a.score))[0];
   const portraitTeachingFocus = learningPortrait?.teachingFocus?.length
     ? learningPortrait.teachingFocus
     : portraitDimensions
@@ -168,6 +211,12 @@ export const ClassManagement: React.FC = () => {
         reason: item.evidence,
         action: item.suggestion,
       }));
+  const portraitTitle = learningPortrait && portraitStudentRawName && portraitStudentMaskedName
+    ? learningPortrait.title.replace(portraitStudentRawName, portraitStudentMaskedName)
+    : learningPortrait?.title;
+  const portraitScopeLabel = learningPortrait?.scope === 'class' ? '班级画像' : '学生画像';
+  const portraitPrimaryRisk = portraitRiskDimensions[0]?.name || '暂无明显集中薄弱点';
+  const portraitPrimaryStrength = portraitTopDimension?.name || '暂无稳定优势维度';
   const classJoinCode = selectedClass ? selectedClass.joinCode || `CLASS-${selectedClass.classId.slice(-6).toUpperCase()}` : '';
   const classJoinLink = classJoinCode ? `${window.location.origin}/?joinClass=${encodeURIComponent(classJoinCode)}` : '';
 
@@ -274,7 +323,7 @@ export const ClassManagement: React.FC = () => {
     const header = ['序号', '姓名', '学号/工号', '院系', '专业', '班级', '加入时间'];
     const rows = members.map((member, index) => [
       index + 1,
-      member.displayName || member.userId,
+      getMaskedMemberName(member),
       member.username || member.userId,
       '智慧产业学院',
       '物联网应用技术',
@@ -489,11 +538,21 @@ export const ClassManagement: React.FC = () => {
     }
   };
 
-  const handleRemoveMember = async (member: ClassMember) => {
-    if (!selectedClassId) return;
+  const openRemoveMember = (member: ClassMember) => {
+    setOpenMemberMenuId('');
+    setMemberToRemove(member);
+  };
+
+  const handleRemoveMember = async () => {
+    if (!selectedClassId || !memberToRemove) return;
     try {
-      await api.classroom.removeMember(selectedClassId, member.userId);
-      setMembers(prev => prev.filter(item => item.userId !== member.userId));
+      await api.classroom.removeMember(selectedClassId, memberToRemove.userId);
+      setMembers(prev => prev.filter(item => item.userId !== memberToRemove.userId));
+      if (selectedMemberId === memberToRemove.userId) {
+        const nextMember = members.find(item => item.userId !== memberToRemove.userId);
+        setSelectedMemberId(nextMember?.userId || '');
+      }
+      setMemberToRemove(null);
       showNotice('学生已移出班级。');
     } catch (err) {
       showNotice(err instanceof Error ? err.message : '移除学生失败。');
@@ -808,38 +867,74 @@ export const ClassManagement: React.FC = () => {
         </div>
 
         {learningPortrait && (
-          <div className="rounded-xl border border-sky-100 bg-sky-50/60 p-4 space-y-3">
-            <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm space-y-4">
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
               <div>
                 <div className="text-[10px] font-mono font-black uppercase text-sky-700">
-                  {learningPortrait.scope === 'class' ? 'Class Portrait' : 'Student Portrait'}
+                  {portraitScopeLabel}
                 </div>
-                <h4 className="mt-1 text-sm font-black text-neutral-950">{learningPortrait.title}</h4>
+                <h4 className="mt-1 text-base font-black text-neutral-950">{portraitTitle}</h4>
+                <p className="mt-2 max-w-3xl text-xs leading-relaxed text-neutral-600">{learningPortrait.summary}</p>
               </div>
-              <div className="flex flex-wrap gap-2 text-[10px] font-mono font-black text-sky-800">
-                <span className="rounded-lg border border-sky-200 bg-white/70 px-2 py-1">提交 {learningPortrait.coverage.submissions}</span>
-                <span className="rounded-lg border border-sky-200 bg-white/70 px-2 py-1">步骤 {learningPortrait.coverage.completedTasks}</span>
+              <div className="flex flex-wrap gap-2 text-[10px] font-mono font-black text-neutral-700">
+                <span className="rounded-lg border border-neutral-200 bg-neutral-50 px-2 py-1">提交 {learningPortrait.coverage.submissions}</span>
+                <span className="rounded-lg border border-neutral-200 bg-neutral-50 px-2 py-1">步骤 {learningPortrait.coverage.completedTasks}</span>
+                {portraitMissingCount > 0 && (
+                  <span className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-amber-700">缺 {portraitMissingCount}</span>
+                )}
                 {learningPortrait.coverage.averageAiScore !== undefined && (
-                  <span className="rounded-lg border border-sky-200 bg-white/70 px-2 py-1">均分 {learningPortrait.coverage.averageAiScore}</span>
+                  <span className="rounded-lg border border-neutral-200 bg-neutral-50 px-2 py-1">均分 {learningPortrait.coverage.averageAiScore}</span>
                 )}
               </div>
             </div>
-            <p className="text-xs leading-relaxed text-sky-950">{learningPortrait.summary}</p>
+
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50/70 p-4">
+                <div className="text-[10px] font-mono font-black uppercase text-emerald-700">优势判断</div>
+                <div className="mt-1 text-sm font-black text-emerald-950">{portraitPrimaryStrength}</div>
+                <p className="mt-2 text-[11px] leading-relaxed text-emerald-900/80">
+                  {learningPortrait.scope === 'class' ? '可作为课堂展示、同伴讲解或项目复盘的起点。' : '可鼓励学生继续用证据解释自己的工程判断。'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-amber-100 bg-amber-50/70 p-4">
+                <div className="text-[10px] font-mono font-black uppercase text-amber-700">重点关注</div>
+                <div className="mt-1 text-sm font-black text-amber-950">{portraitPrimaryRisk}</div>
+                <p className="mt-2 text-[11px] leading-relaxed text-amber-900/80">
+                  {learningPortrait.scope === 'class' ? '建议安排集中讲解、错题复盘或演示验证。' : '建议给出个别追问、补做任务或二次修改建议。'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-sky-100 bg-sky-50/70 p-4">
+                <div className="text-[10px] font-mono font-black uppercase text-sky-700">教学决策</div>
+                <div className="mt-1 text-sm font-black text-sky-950">
+                  {portraitWeakCount > 0 ? `优先处理 ${portraitWeakCount} 个薄弱维度` : '保持拓展提升'}
+                </div>
+                <p className="mt-2 text-[11px] leading-relaxed text-sky-900/80">
+                  结合提交证据、客观题结果和教师观察，决定补讲、分层辅导或项目拓展。
+                </p>
+              </div>
+            </div>
+
+            {portraitMissingCount > 0 && (
+              <div className="rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-[11px] leading-relaxed text-amber-900">
+                当前只覆盖 {learningPortrait.coverage.completedTasks}/8 个学习步骤，未提交维度已按“证据不足”纳入画像。建议先补齐缺失步骤，再作为班级或学生的完整学习结论使用。
+              </div>
+            )}
+
             {learningPortrait.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {learningPortrait.tags.map(tag => (
-                  <span key={tag} className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-sky-800">
+                  <span key={tag} className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-1 text-[10px] font-bold text-neutral-700">
                     {tag}
                   </span>
                 ))}
               </div>
             )}
             {learningPortrait.focusItems && learningPortrait.focusItems.length > 0 && (
-              <div className="rounded-lg border border-white/70 bg-white/70 p-3">
-                <div className="text-[10px] font-mono font-black uppercase text-neutral-400">重点关注</div>
+              <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-3">
+                <div className="text-[10px] font-mono font-black uppercase text-amber-700">待跟进问题</div>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {learningPortrait.focusItems.map(item => (
-                    <span key={item} className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold text-amber-800">
+                    <span key={item} className="rounded-full border border-amber-200 bg-white px-2.5 py-1 text-[10px] font-bold text-amber-800">
                       {item}
                     </span>
                   ))}
@@ -853,7 +948,7 @@ export const ClassManagement: React.FC = () => {
                     <BarChart3 className="h-4 w-4 text-sky-700" />
                     <span className="text-[10px] font-mono font-black uppercase">能力概览</span>
                   </div>
-                  <div className="mt-4 grid grid-cols-3 gap-3 text-center">
+                  <div className="mt-4 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
                     <div>
                       <div className="text-2xl font-black text-neutral-950">{portraitAverageScore ?? '-'}</div>
                       <div className="mt-1 text-[10px] font-bold text-neutral-500">平均表现</div>
@@ -861,6 +956,10 @@ export const ClassManagement: React.FC = () => {
                     <div>
                       <div className="text-2xl font-black text-sky-800">{learningPortrait.coverage.completedTasks}</div>
                       <div className="mt-1 text-[10px] font-bold text-neutral-500">覆盖步骤</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-black text-emerald-700">{portraitStrongCount}</div>
+                      <div className="mt-1 text-[10px] font-bold text-neutral-500">达标维度</div>
                     </div>
                     <div>
                       <div className="text-2xl font-black text-amber-700">{portraitWeakCount}</div>
@@ -913,19 +1012,25 @@ export const ClassManagement: React.FC = () => {
               </div>
             )}
             {learningPortrait.dimensions && learningPortrait.dimensions.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {learningPortrait.dimensions.map(dimension => (
-                  <div key={`${dimension.name}-${dimension.level}`} className={`rounded-lg border p-3 ${getPortraitLevelStyle(dimension.level)}`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="text-xs font-black">{dimension.name}</div>
-                      <span className="rounded-full bg-white/70 px-2 py-0.5 text-[9px] font-mono font-black uppercase">
-                        {dimension.level}{dimension.score === undefined ? '' : ` · ${dimension.score}`}
-                      </span>
+              <div>
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <div className="text-xs font-black text-neutral-950">8 个学习步骤诊断</div>
+                  <div className="text-[10px] font-bold text-neutral-500">含证据、状态和下一步教学动作</div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+                  {learningPortrait.dimensions.map(dimension => (
+                    <div key={`${dimension.name}-${dimension.level}`} className={`rounded-lg border p-3 ${getPortraitLevelStyle(dimension.level)}`}>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="text-xs font-black">{dimension.name}</div>
+                        <span className={`rounded-full border px-2 py-0.5 text-[9px] font-black ${getPortraitLevelBadgeStyle(dimension.level)}`}>
+                          {getPortraitLevelLabel(dimension.level)}{dimension.score === undefined ? '' : ` · ${dimension.score}`}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-[11px] leading-relaxed">{dimension.evidence}</p>
+                      <p className="mt-2 text-[11px] leading-relaxed opacity-90">{dimension.suggestion}</p>
                     </div>
-                    <p className="mt-2 text-[11px] leading-relaxed">{dimension.evidence}</p>
-                    <p className="mt-2 text-[11px] leading-relaxed opacity-90">{dimension.suggestion}</p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
@@ -1034,7 +1139,7 @@ export const ClassManagement: React.FC = () => {
                       : 'border-neutral-150 bg-neutral-50 text-neutral-950 hover:border-neutral-300 hover:bg-white'
                   }`}
                 >
-                  <div className="text-xs font-black truncate">{member.displayName || member.userId}</div>
+                  <div className="text-xs font-black truncate">{getMaskedMemberName(member)}</div>
                   <div className={`mt-1 text-[10px] truncate ${selectedMemberId === member.userId ? 'text-neutral-300' : 'text-neutral-500'}`}>
                     @{member.username || member.userId}
                   </div>
@@ -1059,7 +1164,7 @@ export const ClassManagement: React.FC = () => {
                   <div className="min-w-0">
                     <div className="text-xs font-black truncate">{submission.title}</div>
                     <div className={`mt-1 text-[10px] truncate ${selectedSubmissionId === submission.submissionId ? 'text-neutral-300' : 'text-neutral-500'}`}>
-                      {submission.studentName} · {taskLabels[submission.taskType] || submission.taskType}
+                      {getMaskedSubmissionStudentName(submission)} · {taskLabels[submission.taskType] || submission.taskType}
                     </div>
                   </div>
                   <span className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-mono font-black ${
@@ -1097,7 +1202,7 @@ export const ClassManagement: React.FC = () => {
                   </div>
                   <h3 className="font-display font-black text-lg text-neutral-950 mt-1">{selectedSubmission.title}</h3>
                   <p className="text-xs text-neutral-500 mt-1">
-                    {selectedSubmission.studentName} · {selectedSubmission.projectName || selectedSubmission.projectId || '未关联项目'} · {formatTime(selectedSubmission.createdAt)}
+                    {getMaskedSubmissionStudentName(selectedSubmission)} · {selectedSubmission.projectName || selectedSubmission.projectId || '未关联项目'} · {formatTime(selectedSubmission.createdAt)}
                   </p>
                 </div>
                 <span className={`w-fit rounded-lg border px-2 py-1 text-[10px] font-mono font-black uppercase ${
@@ -1237,7 +1342,7 @@ export const ClassManagement: React.FC = () => {
                         })()}
                       </div>
                     ) : (
-                      (parsedContent.questions || parsedContent.prompts.map(prompt => ({ type: 'short' as const, prompt }))).map((question, index) => (
+                      (parsedContent.questions || (parsedContent.prompts || []).map(prompt => ({ type: 'short' as const, prompt }))).map((question, index) => (
                         <div key={`${selectedSubmission.submissionId}-${index}`} className="rounded-xl border border-neutral-150 bg-white p-4">
                           <div className="flex flex-wrap items-start gap-2 text-[11px] font-bold text-neutral-900 leading-relaxed">
                             <span>{index + 1}. {question.prompt}</span>
@@ -1246,7 +1351,7 @@ export const ClassManagement: React.FC = () => {
                             </span>
                           </div>
                           <div className="mt-2 rounded-lg bg-neutral-50 border border-neutral-100 p-3 text-xs text-neutral-700 leading-relaxed whitespace-pre-wrap">
-                            {parsedContent.responses[index] || '学生未填写。'}
+                            {parsedContent.responses?.[index] || '学生未填写。'}
                           </div>
                           {question.options?.length && (
                             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -1254,7 +1359,7 @@ export const ClassManagement: React.FC = () => {
                                 <span
                                   key={option}
                                   className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                                    option === parsedContent.responses[index]
+                                    option === parsedContent.responses?.[index]
                                       ? 'bg-sky-50 text-sky-800'
                                       : 'bg-neutral-100 text-neutral-500'
                                   }`}
@@ -1266,10 +1371,10 @@ export const ClassManagement: React.FC = () => {
                           )}
                           {question.answer && (
                             <div className={`mt-2 text-[11px] font-bold ${
-                              parsedContent.responses[index] === question.answer ? 'text-emerald-700' : 'text-amber-700'
+                              parsedContent.responses?.[index] === question.answer ? 'text-emerald-700' : 'text-amber-700'
                             }`}>
                               标准答案：{question.answer}
-                              {parsedContent.responses[index] === question.answer ? ' · 已掌握' : ' · 需关注'}
+                              {parsedContent.responses?.[index] === question.answer ? ' · 已掌握' : ' · 需关注'}
                             </div>
                           )}
                         </div>
@@ -1696,9 +1801,9 @@ export const ClassManagement: React.FC = () => {
                           return (
                           <tr key={member.userId} className={`transition hover:bg-neutral-50 ${memberMenuOpen ? 'relative z-30' : ''}`}>
                             <td className="px-4 py-4">
-                              <input type="checkbox" className="h-4 w-4 rounded border-neutral-300" aria-label={`选择 ${member.displayName || member.userId}`} />
+                              <input type="checkbox" className="h-4 w-4 rounded border-neutral-300" aria-label={`选择 ${getMaskedMemberName(member)}`} />
                             </td>
-                            <td className="truncate px-4 py-4 font-medium text-neutral-800">{member.displayName || member.userId}</td>
+                            <td className="truncate px-4 py-4 font-medium text-neutral-800">{getMaskedMemberName(member)}</td>
                             <td className="truncate px-4 py-4">{member.username || member.userId}</td>
                             <td className="truncate px-4 py-4">智慧产业学院</td>
                             <td className="truncate px-4 py-4">物联网应用技术</td>
@@ -1708,7 +1813,7 @@ export const ClassManagement: React.FC = () => {
                               <div className="flex items-center gap-5">
                                 <button
                                   type="button"
-                                  onClick={() => handleRemoveMember(member)}
+                                  onClick={() => openRemoveMember(member)}
                                   className="text-sm font-bold text-blue-600 transition hover:text-blue-700"
                                 >
                                   移除
@@ -1995,12 +2100,12 @@ export const ClassManagement: React.FC = () => {
                   ) : members.map(member => (
                     <div key={member.userId} className="flex items-center justify-between gap-3 rounded-xl border border-neutral-150 bg-neutral-50 px-3 py-2.5">
                       <div className="min-w-0">
-                        <div className="truncate text-xs font-black text-neutral-950">{member.displayName || member.userId}</div>
+                        <div className="truncate text-xs font-black text-neutral-950">{getMaskedMemberName(member)}</div>
                         <div className="mt-0.5 truncate text-[10px] text-neutral-500">@{member.username || member.userId}</div>
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleRemoveMember(member)}
+                        onClick={() => openRemoveMember(member)}
                         className="shrink-0 rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-[11px] font-bold text-neutral-600 transition hover:border-neutral-900 hover:text-neutral-950"
                       >
                         移除
@@ -2150,6 +2255,61 @@ export const ClassManagement: React.FC = () => {
         </div>
       )}
 
+      {memberToRemove && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-neutral-950/30 px-4 backdrop-blur-[1px]">
+          <div className="w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-5 shadow-xl">
+            <div className="flex items-start justify-between gap-4 border-b border-neutral-100 pb-4">
+              <div>
+                <h3 className="font-display text-base font-black text-neutral-950">移除学生</h3>
+                <p className="mt-1 text-xs leading-relaxed text-neutral-500">
+                  移除后，该学生将不再出现在当前班级名单中，已有账号不会被删除。
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMemberToRemove(null)}
+                className="h-8 w-8 rounded-lg border border-neutral-200 text-neutral-500 transition hover:border-neutral-900 hover:text-neutral-950 flex items-center justify-center"
+                aria-label="关闭移除学生弹窗"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="space-y-2 pt-4">
+              <div className="rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-3">
+                <div className="text-[10px] font-mono font-black uppercase text-neutral-400">学生</div>
+                <div className="mt-1 text-xs font-black text-neutral-950">
+                  {getMaskedMemberName(memberToRemove)}
+                </div>
+                <div className="mt-1 text-[11px] text-neutral-500">
+                  @{memberToRemove.username || memberToRemove.userId}
+                </div>
+              </div>
+              {selectedClass && (
+                <div className="text-[11px] leading-relaxed text-neutral-500">
+                  当前班级：{selectedClass.name}
+                </div>
+              )}
+            </div>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setMemberToRemove(null)}
+                className="rounded-xl border border-neutral-200 px-4 py-2 text-xs font-bold text-neutral-700 transition hover:border-neutral-900 hover:text-neutral-950"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={handleRemoveMember}
+                className="rounded-xl bg-neutral-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-neutral-800"
+              >
+                确认移除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showAddStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/30 px-4 backdrop-blur-[1px]">
           <div className="w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-5 shadow-xl">
@@ -2221,7 +2381,7 @@ export const ClassManagement: React.FC = () => {
               <div className="rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-3">
                 <div className="text-[10px] font-mono font-black uppercase text-neutral-400">学生</div>
                 <div className="mt-1 text-xs font-black text-neutral-950">
-                  {memberToTransfer.displayName || memberToTransfer.userId}
+                  {getMaskedMemberName(memberToTransfer)}
                 </div>
               </div>
               <select

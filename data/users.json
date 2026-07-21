@@ -1,13 +1,653 @@
 [
   {
-    "userId": "user_teacher_demo",
-    "username": "teacher_demo",
+    "userId": "user_youngdylen",
+    "username": "yangdaikun2559",
     "email": "",
-    "displayName": "参赛演示教师",
-    "passwordHash": "8327b3d20176a43a3690dbaca432b4e35ea050384c76e62cf9237f654536b26d",
+    "displayName": "Young Dylan",
+    "passwordHash": "9938717109d51adefbcac763c1b047eb5304cf4d79317326ca2f11c1af0026fa",
     "role": "admin",
-    "createdAt": "2026-07-18T00:00:00.000Z",
-    "updatedAt": "2026-07-18T00:00:00.000Z"
+    "createdAt": "2026-06-03T12:53:00.000Z",
+    "updatedAt": "2026-06-07T02:59:06.328Z"
+  },
+  {
+    "userId": "user_zho9eul9l",
+    "username": "123456",
+    "email": "",
+    "displayName": "杨代坤",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-06-03T13:24:32.710Z",
+    "updatedAt": "2026-06-03T13:24:32.710Z"
+  },
+  {
+    "userId": "user_233210217",
+    "username": "233210217",
+    "email": "",
+    "displayName": "甄鹏",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243010692",
+    "username": "243010692",
+    "email": "",
+    "displayName": "陶艺然",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243010744",
+    "username": "243010744",
+    "email": "",
+    "displayName": "何家承",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243020062",
+    "username": "243020062",
+    "email": "",
+    "displayName": "彭平",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243040025",
+    "username": "243040025",
+    "email": "",
+    "displayName": "王敬民",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243040093",
+    "username": "243040093",
+    "email": "",
+    "displayName": "杨羿林",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243060053",
+    "username": "243060053",
+    "email": "",
+    "displayName": "张靓",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243060059",
+    "username": "243060059",
+    "email": "",
+    "displayName": "龙明桂",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243070061",
+    "username": "243070061",
+    "email": "",
+    "displayName": "王宇",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243070140",
+    "username": "243070140",
+    "email": "",
+    "displayName": "邵莉峰",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243100056",
+    "username": "243100056",
+    "email": "",
+    "displayName": "张一冉",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243100190",
+    "username": "243100190",
+    "email": "",
+    "displayName": "薛智文",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243100211",
+    "username": "243100211",
+    "email": "",
+    "displayName": "张文",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243110165",
+    "username": "243110165",
+    "email": "",
+    "displayName": "冯甜甜",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243110217",
+    "username": "243110217",
+    "email": "",
+    "displayName": "魏东瑞",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243130037",
+    "username": "243130037",
+    "email": "",
+    "displayName": "赵语嫣",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243160178",
+    "username": "243160178",
+    "email": "",
+    "displayName": "董嘉琪",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243160197",
+    "username": "243160197",
+    "email": "",
+    "displayName": "胡凤",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243160589",
+    "username": "243160589",
+    "email": "",
+    "displayName": "冯阳",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243190077",
+    "username": "243190077",
+    "email": "",
+    "displayName": "谢春林",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243230074",
+    "username": "243230074",
+    "email": "",
+    "displayName": "雷曼婵",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240001",
+    "username": "243240001",
+    "email": "",
+    "displayName": "兰健",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240002",
+    "username": "243240002",
+    "email": "",
+    "displayName": "陈浩聪",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240010",
+    "username": "243240010",
+    "email": "",
+    "displayName": "高烽",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240013",
+    "username": "243240013",
+    "email": "",
+    "displayName": "孙吉洋",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240018",
+    "username": "243240018",
+    "email": "",
+    "displayName": "刘东林",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240022",
+    "username": "243240022",
+    "email": "",
+    "displayName": "周颖",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240025",
+    "username": "243240025",
+    "email": "",
+    "displayName": "兰超",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240031",
+    "username": "243240031",
+    "email": "",
+    "displayName": "陈啟桓",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240032",
+    "username": "243240032",
+    "email": "",
+    "displayName": "卢宇杰",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240034",
+    "username": "243240034",
+    "email": "",
+    "displayName": "罗春阳",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240038",
+    "username": "243240038",
+    "email": "",
+    "displayName": "黄胤铭",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240042",
+    "username": "243240042",
+    "email": "",
+    "displayName": "刘亦可",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240059",
+    "username": "243240059",
+    "email": "",
+    "displayName": "谭顺心",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240060",
+    "username": "243240060",
+    "email": "",
+    "displayName": "邓浩天",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240062",
+    "username": "243240062",
+    "email": "",
+    "displayName": "张金鹏",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240070",
+    "username": "243240070",
+    "email": "",
+    "displayName": "廖珍",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240077",
+    "username": "243240077",
+    "email": "",
+    "displayName": "郭雨洋",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240086",
+    "username": "243240086",
+    "email": "",
+    "displayName": "夏源",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240087",
+    "username": "243240087",
+    "email": "",
+    "displayName": "杨兴锐",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240088",
+    "username": "243240088",
+    "email": "",
+    "displayName": "许如意",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240091",
+    "username": "243240091",
+    "email": "",
+    "displayName": "骆弟滨",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240094",
+    "username": "243240094",
+    "email": "",
+    "displayName": "曾凯",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240099",
+    "username": "243240099",
+    "email": "",
+    "displayName": "安蔡平",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240103",
+    "username": "243240103",
+    "email": "",
+    "displayName": "张致源",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240105",
+    "username": "243240105",
+    "email": "",
+    "displayName": "刘子象",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240106",
+    "username": "243240106",
+    "email": "",
+    "displayName": "杨甜豪",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240107",
+    "username": "243240107",
+    "email": "",
+    "displayName": "宋涛",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240108",
+    "username": "243240108",
+    "email": "",
+    "displayName": "何志鋆",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240110",
+    "username": "243240110",
+    "email": "",
+    "displayName": "雍智杰",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240112",
+    "username": "243240112",
+    "email": "",
+    "displayName": "徐思彤",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240113",
+    "username": "243240113",
+    "email": "",
+    "displayName": "徐贤浩",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240114",
+    "username": "243240114",
+    "email": "",
+    "displayName": "李泽民",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240115",
+    "username": "243240115",
+    "email": "",
+    "displayName": "蒋森宇",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243240118",
+    "username": "243240118",
+    "email": "",
+    "displayName": "吴仕腾",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243250227",
+    "username": "243250227",
+    "email": "",
+    "displayName": "杨琦",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243260004",
+    "username": "243260004",
+    "email": "",
+    "displayName": "黄海峰",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243260011",
+    "username": "243260011",
+    "email": "",
+    "displayName": "廖浩延",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243260155",
+    "username": "243260155",
+    "email": "",
+    "displayName": "卢国强",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243270185",
+    "username": "243270185",
+    "email": "",
+    "displayName": "邱娅娟",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243280156",
+    "username": "243280156",
+    "email": "",
+    "displayName": "谭臣",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243280221",
+    "username": "243280221",
+    "email": "",
+    "displayName": "徐晞橦",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
+  },
+  {
+    "userId": "user_243290011",
+    "username": "243290011",
+    "email": "",
+    "displayName": "罗海",
+    "passwordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+    "role": "user",
+    "createdAt": "2026-07-19T07:42:03Z",
+    "updatedAt": "2026-07-19T07:42:03Z"
   },
   {
     "userId": "user_student_demo",
@@ -16,6 +656,16 @@
     "displayName": "参赛演示学生",
     "passwordHash": "6af09aa64ad64ec311ff8def7cb1ed1468904c45bb8cb7294d630089aaade20a",
     "role": "user",
+    "createdAt": "2026-07-18T00:00:00.000Z",
+    "updatedAt": "2026-07-18T00:00:00.000Z"
+  },
+  {
+    "userId": "user_teacher_demo",
+    "username": "teacher_demo",
+    "email": "",
+    "displayName": "参赛演示教师",
+    "passwordHash": "8327b3d20176a43a3690dbaca432b4e35ea050384c76e62cf9237f654536b26d",
+    "role": "admin",
     "createdAt": "2026-07-18T00:00:00.000Z",
     "updatedAt": "2026-07-18T00:00:00.000Z"
   }

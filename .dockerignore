@@ -10,4 +10,5 @@ tmp
 .env.*
 !.env.example
 .codex-dev-server*.log
+.codex_tmp*
 README_部署说明.md

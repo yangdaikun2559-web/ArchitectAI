@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../lib/LanguageContext';
 import { 
-  Keyboard, Sparkles, Binary, Sliders, Database, History, 
+  Keyboard, Sparkles, Binary, Database, History, 
   Settings, UserCheck, AlertTriangle, ClipboardCheck, UsersRound, School
 } from 'lucide-react';
 
@@ -42,7 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange, hasAc
             <button
               onClick={() => onTabChange('optimize')}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition ${
-                currentTab === 'optimize'
+                currentTab === 'optimize' || currentTab === 'progress'
                   ? 'bg-neutral-900 text-white'
                   : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
               }`}
@@ -52,18 +52,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange, hasAc
                 {t('step2')}
               </span>
               {hasActiveProject && <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-ping" />}
-            </button>
-
-            <button
-              onClick={() => onTabChange('progress')}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold transition ${
-                currentTab === 'progress'
-                  ? 'bg-neutral-900 text-white'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
-              }`}
-            >
-              <Sliders className="w-4 h-4" />
-              {t('step3')}
             </button>
 
             <button
