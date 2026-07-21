@@ -88,11 +88,11 @@ DEEPSEEK_API_KEY=你的 DeepSeek API Key
 部署版内置参赛演示账号：
 
 ```text
-教师账号：teacher_demo
-教师密码：teacher123456
+管理员账号：yangdaikun2559（Young Dylan）
+管理员密码：123456
 
-学生账号：student_demo
-学生密码：student123456
+学生账号：123456（杨代坤）
+学生密码：123456
 ```
 
 ## 六、参赛说明建议写法
